@@ -1,0 +1,81 @@
+{
+  "name": "Salão Manager - Agenda",
+  "short_name": "Salão Manager",
+  "description": "App de agendamento e gerenciamento para salão de beleza",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#8a4fff",
+  "theme_color": "#8a4fff",
+  "orientation": "portrait-primary",
+  "scope": "./",
+  "prefer_related_applications": false,
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%238a4fff'/%3E%3Ctext x='96' y='130' font-family='Arial' font-size='100' font-weight='bold' text-anchor='middle' fill='white'%3ES%3C/text%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%238a4fff'/%3E%3Ctext x='256' y='330' font-family='Arial' font-size='280' font-weight='bold' text-anchor='middle' fill='white'%3ES%3C/text%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 72 72'%3E%3Crect width='72' height='72' fill='%238a4fff'/%3E%3Ctext x='36' y='50' font-family='Arial' font-size='40' font-weight='bold' text-anchor='middle' fill='white'%3ES%3C/text%3E%3C/svg%3E",
+      "sizes": "72x72",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' fill='%238a4fff'/%3E%3Ctext x='48' y='65' font-family='Arial' font-size='50' font-weight='bold' text-anchor='middle' fill='white'%3ES%3C/text%3E%3C/svg%3E",
+      "sizes": "96x96",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 144 144'%3E%3Crect width='144' height='144' fill='%238a4fff'/%3E%3Ctext x='72' y='95' font-family='Arial' font-size='75' font-weight='bold' text-anchor='middle' fill='white'%3ES%3C/text%3E%3C/svg%3E",
+      "sizes": "144x144",
+      "type": "image/svg+xml"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"],
+  "lang": "pt-BR",
+  "dir": "ltr",
+  "screenshots": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 375 812'%3E%3Crect width='375' height='812' fill='%23f8fafc'/%3E%3Crect x='0' y='0' width='375' height='60' fill='%238a4fff'/%3E%3Ctext x='187.5' y='40' font-family='Arial' font-size='18' font-weight='bold' text-anchor='middle' fill='white'%3ESalão Manager%3C/text%3E%3C/svg%3E",
+      "sizes": "375x812",
+      "type": "image/svg+xml",
+      "form_factor": "narrow",
+      "label": "Tela inicial do aplicativo"
+    }
+  ],
+  "related_applications": [],
+  "shortcuts": [
+    {
+      "name": "Novo Agendamento",
+      "short_name": "Agendar",
+      "description": "Criar um novo agendamento rapidamente",
+      "url": "./index.html?action=new-appointment",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' fill='%234ade80'/%3E%3Ctext x='48' y='60' font-family='Arial' font-size='40' font-weight='bold' text-anchor='middle' fill='white'%3E%2B%3C/text%3E%3C/svg%3E",
+          "sizes": "96x96"
+        }
+      ]
+    },
+    {
+      "name": "Calendário",
+      "short_name": "Agenda",
+      "description": "Ver agenda do dia",
+      "url": "./index.html?view=calendar",
+      "icons": [
+        {
+          "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 96 96'%3E%3Crect width='96' height='96' fill='%236366f1'/%3E%3Ctext x='48' y='60' font-family='Arial' font-size='30' font-weight='bold' text-anchor='middle' fill='white'%3E📅%3C/text%3E%3C/svg%3E",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}
