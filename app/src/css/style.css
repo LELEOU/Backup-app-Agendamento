@@ -1,3 +1,9 @@
+/* Diretivas do Tailwind CSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Variáveis de tema customizadas */
 :root, .light-mode {
     --bg-primary: #ffffff;
     --bg-secondary: #f7f7f8;
