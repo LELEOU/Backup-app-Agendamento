@@ -3207,7 +3207,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>
                     </div>
                 ` : `
-                    <div class="mb-4 p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-center">
+                    <div class="mb-4 p-3 bg-[var(--bg-secondary)] rounded-lg text-center border border-[var(--border-color)]">
                         <p class="text-[var(--text-secondary)] text-sm">🎂 Nenhum aniversariante hoje</p>
                     </div>
                 `}
@@ -3217,7 +3217,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <h4 class="font-medium text-[var(--text-primary)] mb-2">📅 ${t.thisMonthBirthdays || 'Este Mês'}:</h4>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
                             ${thisMonthBirthdays.slice(0, 8).map(client => `
-                                <div class="flex items-center justify-between p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-sm">
+                                <div class="flex items-center justify-between p-2 bg-[var(--accent-light)] rounded text-sm border border-[var(--border-color)]">
                                     <span class="text-[var(--text-primary)]">${client.name}</span>
                                     <span class="text-[var(--text-secondary)]">Dia ${client.birthday_day}</span>
                                 </div>
@@ -3225,7 +3225,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>
                     </div>
                 ` : `
-                    <div class="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg text-center">
+                    <div class="p-3 bg-[var(--bg-secondary)] rounded-lg text-center border border-[var(--border-color)]">
                         <p class="text-[var(--text-secondary)] text-sm">📅 Nenhum aniversariante este mês</p>
                         <p class="text-xs text-[var(--text-secondary)] mt-1">💡 Cadastre aniversários dos clientes para ver os alertas aqui</p>
                     </div>
@@ -3272,7 +3272,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <div class="flex space-x-2">
                     <button onclick="showClientHistory('${client.id}')" 
-                        class="px-3 py-1 text-sm bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded hover:bg-blue-100 dark:hover:bg-blue-900/50 border border-blue-200 dark:border-blue-700 transition-colors"
+                        class="px-3 py-1 text-sm bg-[var(--accent-light)] text-[var(--accent-primary)] rounded hover:bg-[var(--bg-secondary)] border border-[var(--border-color)] transition-colors"
                         title="Ver histórico de atendimentos">
                         📊 Histórico
                     </button>
@@ -3508,8 +3508,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                             </div>
 
                             <div id="lunchTimeInputs" class="space-y-6">
-                                <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4 mb-4">
-                                    <p class="text-sm text-blue-800 dark:text-blue-300">
+                                <div class="bg-[var(--accent-light)] border border-[var(--border-color)] rounded-lg p-4 mb-4">
+                                    <p class="text-sm text-[var(--text-primary)]">
                                         <strong>💡 Dica:</strong> Use o toggle acima para desativar o almoço por hoje. O almoço será automaticamente reativado à meia-noite (00:00).
                                     </p>
                                 </div>
@@ -3606,9 +3606,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
 
                 <!-- Dicas -->
-                <div class="mt-6 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
-                    <h4 class="font-semibold text-blue-900 dark:text-blue-300 mb-2 flex items-center">💡 Dicas</h4>
-                    <ul class="text-sm text-blue-800 dark:text-blue-400 space-y-1">
+                <div class="mt-6 bg-[var(--accent-light)] border border-[var(--border-color)] rounded-lg p-4">
+                    <h4 class="font-semibold text-[var(--text-primary)] mb-2 flex items-center">💡 Dicas</h4>
+                    <ul class="text-sm text-[var(--text-primary)] space-y-1">
                         <li>• O <strong>Horário Padrão</strong> será aplicado todos os dias da semana</li>
                         <li>• Configure o <strong>Horário do Almoço</strong> que será usado diariamente</li>
                         <li>• Use <strong>Customizar Dias Específicos</strong> para alterar horários pontuais</li>
@@ -6094,10 +6094,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                                     class="block w-full px-4 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-primary)]">${existingSchedule?.notes || ''}</textarea>
                             </div>
                             
-                            <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-4">
+                            <div class="bg-[var(--accent-light)] border border-[var(--border-color)] rounded-lg p-4">
                                 <div class="flex items-start space-x-3">
                                     <div class="text-xl">💡</div>
-                                    <div class="text-sm text-blue-800 dark:text-blue-300">
+                                    <div class="text-sm text-[var(--text-primary)]">
                                         <strong>Dica:</strong> Para solicitar folga, use a opção "Solicitar Fechamento de Agenda" na aba <strong>Meus Horários</strong>.
                                     </div>
                                 </div>
@@ -6659,6 +6659,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <label class="block text-sm font-medium text-[var(--text-secondary)]">⏱️ Duração (minutos)</label>
                             <select name="duration" required class="mt-1 block w-full border-[var(--border-color)] rounded-md shadow-sm px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]">
                                 <option value="30" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.duration === 30 ? 'selected' : ''}>30 minutos (1 slot)</option>
+                                <option value="45" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.duration === 45 ? 'selected' : ''}>45 minutos (1,5 slots)</option>
                                 <option value="60" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.duration === 60 ? 'selected' : ''}>60 minutos (2 slots)</option>
                                 <option value="90" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.duration === 90 ? 'selected' : ''}>90 minutos (3 slots)</option>
                                 <option value="120" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.duration === 120 ? 'selected' : ''}>120 minutos (4 slots)</option>
@@ -7575,8 +7576,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <span>Adicionar Pausa/Transferência</span>
                     </h3>
                     
-                    <div class="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-700 rounded-lg p-3 mb-4">
-                        <div class="text-xs text-blue-800 dark:text-blue-300">
+                    <div class="bg-[var(--accent-light)] border border-[var(--border-color)] rounded-lg p-3 mb-4">
+                        <div class="text-xs text-[var(--text-primary)]">
                             <strong>💡 Como funciona:</strong> Durante a pausa, o profissional principal fica livre para atender outros clientes, 
                             enquanto este cliente é atendido temporariamente por outro profissional.
                         </div>
@@ -8212,9 +8213,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                 <div class="status-section bg-[var(--bg-primary)] rounded-lg p-4 mb-6">
                     <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-4">📋 Status dos Agendamentos</h3>
                     <div class="status-grid grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="status-item text-center p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20">
-                            <div class="text-2xl font-bold text-blue-600">${analytics.appointment_status?.scheduled || 0}</div>
-                            <div class="text-sm text-blue-600">🕐 Agendados</div>
+                        <div class="status-item text-center p-3 rounded-lg bg-[var(--accent-light)] border border-[var(--border-color)]">
+                            <div class="text-2xl font-bold text-[var(--accent-primary)]">${analytics.appointment_status?.scheduled || 0}</div>
+                            <div class="text-sm text-[var(--accent-primary)]">🕐 Agendados</div>
                         </div>
                         <div class="status-item text-center p-3 rounded-lg bg-green-50 dark:bg-green-900/20">
                             <div class="text-2xl font-bold text-green-600">${analytics.appointment_status?.completed || 0}</div>
@@ -9353,7 +9354,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             
             // Renderizar notificações
             container.innerHTML = myNotifications.map(notif => `
-                <div class="p-4 border-b border-[var(--border-color)] ${notif.read ? 'bg-[var(--bg-secondary)] opacity-60' : 'bg-blue-50 dark:bg-blue-900/10'} hover:bg-[var(--accent-light)] cursor-pointer transition-colors"
+                <div class="p-4 border-b border-[var(--border-color)] ${notif.read ? 'bg-[var(--bg-secondary)] opacity-60' : 'bg-[var(--accent-light)]'} hover:bg-[var(--bg-secondary)] cursor-pointer transition-colors"
                      onclick="markNotificationAsRead('${notif.id}')">
                     <div class="flex items-start space-x-3">
                         <div class="text-2xl">${notif.type === 'new_appointment' ? '📅' : '🔔'}</div>
