@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Salão Gerenciamento</string>
+    <string name="title_activity_main">Salão Gerenciamento</string>
+    <string name="package_name">com.agendamento.salao</string>
+    <string name="custom_url_scheme">com.agendamento.salao</string>
+</resources>
