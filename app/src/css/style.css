@@ -106,6 +106,153 @@ body {
     color: white;
 }
 
+/* ==========================================
+   LAYOUT PRINCIPAL - SIDEBAR + CONTENT
+   ========================================== */
+
+/* Container principal em flexbox horizontal */
+#app {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* Sidebar - Base */
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+    flex-shrink: 0; /* Importante: não deixa a sidebar encolher */
+}
+
+/* Main Content */
+#mainContent {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Previne overflow */
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* Overlay - escondido por padrão */
+#sidebarOverlay {
+    display: none;
+}
+
+/* ========================================== 
+   DESKTOP (Telas maiores que 1024px)
+   ========================================== */
+@media (min-width: 1025px) {
+    #sidebar {
+        position: relative; /* Mudei de sticky para relative */
+        width: 16rem; /* 256px fixo */
+    }
+    
+    /* Esconde botões mobile */
+    #menuToggle,
+    #closeSidebarBtn {
+        display: none !important;
+    }
+}
+
+/* ========================================== 
+   MOBILE/TABLET (Até 1024px)
+   ========================================== */
+@media (max-width: 1024px) {
+    /* App em coluna no mobile */
+    #app {
+        flex-direction: column;
+    }
+    
+    /* Sidebar fixa escondida */
+    #sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 85vw;
+        max-width: 320px;
+        height: 100vh;
+        z-index: 1000;
+        transform: translateX(-100%); /* Escondida à esquerda */
+        box-shadow: none;
+    }
+    
+    /* Sidebar aberta */
+    #sidebar.active {
+        transform: translateX(0);
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+    }
+    
+    /* Mostra botões mobile */
+    #menuToggle,
+    #closeSidebarBtn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Overlay backdrop */
+    #sidebarOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        -webkit-backdrop-filter: blur(2px);
+        backdrop-filter: blur(2px);
+    }
+    
+    #sidebarOverlay.active {
+        display: block;
+    }
+    
+    /* Main content ocupa tela toda */
+    #mainContent {
+        width: 100%;
+    }
+}
+
+/* ==========================================
+   GARANTIAS ANTI-ACHATAMENTO
+   ========================================== */
+
+/* Garante que containers não sejam comprimidos */
+.container,
+.max-w-7xl,
+.mx-auto {
+    width: 100%;
+    max-width: 100%;
+}
+
+/* Garante espaçamento mínimo nos cards */
+.bg-white,
+.bg-\[var\(--bg-primary\)\],
+.bg-\[var\(--bg-secondary\)\] {
+    min-width: 0;
+}
+
+/* Garante que grids não sejam comprimidos */
+.grid {
+    width: 100%;
+}
+
+/* Calendário não pode ser achatado */
+.calendar-day {
+    min-width: 80px;
+    width: 100%;
+}
+
+/* Garante que o conteúdo das views tenha padding adequado */
+#mainContent > div {
+    padding: 1rem;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 /* Card de Perfil do Usuário */
 #userProfileCard {
     position: relative;
@@ -285,4 +432,3 @@ body {
         margin-top: 0.5rem !important;
     }
 }
-

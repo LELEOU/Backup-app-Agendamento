@@ -73,16 +73,27 @@
         <!-- Login content will be injected here by app.js -->
     </div>
 
-    <div id="app" class="min-h-screen flex hidden">
+    <div id="app" class="min-h-screen hidden">
+        <!-- Overlay para mobile (backdrop escuro) -->
+        <div id="sidebarOverlay"></div>
+        
         <!-- Sidebar -->
-        <aside class="w-64 bg-[var(--bg-secondary)] border-r border-[var(--border-color)] flex flex-col fixed h-full z-20">
+        <aside id="sidebar" class="bg-[var(--bg-secondary)] border-r border-[var(--border-color)] flex flex-col h-full transition-transform duration-300">
             <div class="p-4 border-b border-[var(--border-color)]">
-                <div class="flex items-center">
-                    <img src="./assets/imgs/NovoS.jpg" alt="Logo" class="w-10 h-10 rounded-full object-cover mr-3 border-2 border-[var(--accent-primary)]">
-                    <div>
-                        <h1 class="font-bold text-lg text-[var(--text-primary)]" data-translate="appName">Neila Vargas</h1>
-                        <p class="text-xs text-[var(--text-secondary)]" data-translate="appSubtitle">Estúdio de Beleza</p>
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center flex-1">
+                        <img src="./assets/imgs/NovoS.jpg" alt="Logo" class="w-10 h-10 rounded-full object-cover mr-3 border-2 border-[var(--accent-primary)]">
+                        <div>
+                            <h1 class="font-bold text-lg text-[var(--text-primary)]" data-translate="appName">Neila Vargas</h1>
+                            <p class="text-xs text-[var(--text-secondary)]" data-translate="appSubtitle">Estúdio de Beleza</p>
+                        </div>
                     </div>
+                    <!-- Botão fechar sidebar (mobile) -->
+                    <button id="closeSidebarBtn" aria-label="Fechar menu" title="Fechar menu" class="lg:hidden p-2 rounded-lg hover:bg-[var(--accent-light)] text-[var(--text-secondary)]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                    </button>
                 </div>
             </div>
             
@@ -166,16 +177,24 @@
                 </div>
             </div>
         </aside>
-        
+
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col ml-64">
+        <div id="mainContent" class="flex flex-col">
             <!-- Header -->
             <header class="bg-[var(--bg-secondary)] border-b border-[var(--border-color)] p-4 flex justify-between items-center sticky top-0 z-10">
-                <div>
-                    <h2 class="text-xl font-bold text-[var(--text-primary)]"></h2>
-                    <p class="text-sm text-[var(--text-secondary)]" id="currentDate"></p>
+                <div class="flex items-center space-x-3">
+                    <!-- Botão hambúrguer (mobile) -->
+                    <button id="menuToggle" aria-label="Abrir menu" title="Abrir menu" class="lg:hidden p-2 rounded-lg hover:bg-[var(--accent-light)] text-[var(--text-secondary)] hover:text-[var(--accent-primary)]">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                        </svg>
+                    </button>
+                    <div>
+                        <h2 class="text-xl font-bold text-[var(--text-primary)]"></h2>
+                        <p class="text-sm text-[var(--text-secondary)]" id="currentDate"></p>
+                    </div>
                 </div>
-                <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-2 md:space-x-4">
                     <!-- Sino de Notificação -->
                     <div id="notificationBell" class="relative cursor-pointer group" data-notification-bell>
                         <div class="p-2 rounded-lg hover:bg-[var(--accent-light)] transition-colors duration-200" onclick="toggleNotificationPanel()">

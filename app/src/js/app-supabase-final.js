@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    // 🚀 INICIALIZAR MENU HAMBÚRGUER RESPONSIVO
+    initMobileMenu();
+
     // 🚀 INICIALIZAR RECURSOS NATIVOS DO CAPACITOR
     if (window.initCapacitorFeatures) {
         try {
@@ -13,6 +16,67 @@ document.addEventListener('DOMContentLoaded', async () => {
         } catch (error) {
             console.log('[APP] ℹ️ Recursos nativos não disponíveis (modo web)');
         }
+    }
+
+    // ==========================================
+    // FUNÇÃO DE MENU HAMBÚRGUER MOBILE
+    // ==========================================
+    function initMobileMenu() {
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+        const navLinks = document.querySelectorAll('#sidebar nav a');
+
+        // Abrir menu
+        if (menuToggle) {
+            menuToggle.addEventListener('click', () => {
+                sidebar?.classList.add('active');
+                sidebarOverlay?.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Previne scroll do body
+            });
+        }
+
+        // Fechar menu - botão X
+        if (closeSidebarBtn) {
+            closeSidebarBtn.addEventListener('click', closeSidebar);
+        }
+
+        // Fechar menu - overlay
+        if (sidebarOverlay) {
+            sidebarOverlay.addEventListener('click', closeSidebar);
+        }
+
+        // Fechar menu ao clicar em link de navegação
+        navLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                // Delay para permitir navegação suave
+                setTimeout(closeSidebar, 150);
+            });
+        });
+
+        // Função para fechar sidebar
+        function closeSidebar() {
+            sidebar?.classList.remove('active');
+            sidebarOverlay?.classList.remove('active');
+            document.body.style.overflow = ''; // Restaura scroll
+        }
+
+        // Fechar ao pressionar ESC
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && sidebar?.classList.contains('active')) {
+                closeSidebar();
+            }
+        });
+
+        // Ajustar ao redimensionar janela
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 1024) {
+                closeSidebar();
+            }
+        });
+
+        console.log('[MOBILE MENU] ✅ Menu hambúrguer inicializado');
     }
 
     // Funções utilitárias
