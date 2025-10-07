@@ -115,8 +115,6 @@ body {
     display: flex;
     flex-direction: row;
     min-height: 100vh;
-    width: 100%;
-    overflow-x: hidden;
 }
 
 /* Sidebar - Base */
@@ -124,9 +122,10 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    position: sticky;
+    top: 0;
     overflow-y: auto;
     transition: transform 0.3s ease;
-    flex-shrink: 0; /* Importante: não deixa a sidebar encolher */
 }
 
 /* Main Content */
@@ -135,8 +134,6 @@ body {
     display: flex;
     flex-direction: column;
     min-width: 0; /* Previne overflow */
-    width: 100%;
-    overflow-x: hidden;
 }
 
 /* Overlay - escondido por padrão */
@@ -149,8 +146,9 @@ body {
    ========================================== */
 @media (min-width: 1025px) {
     #sidebar {
-        position: relative; /* Mudei de sticky para relative */
-        width: 16rem; /* 256px fixo */
+        width: 16rem; /* 256px */
+        flex-shrink: 0;
+        transform: translateX(0);
     }
     
     /* Esconde botões mobile */
@@ -214,43 +212,6 @@ body {
     #mainContent {
         width: 100%;
     }
-}
-
-/* ==========================================
-   GARANTIAS ANTI-ACHATAMENTO
-   ========================================== */
-
-/* Garante que containers não sejam comprimidos */
-.container,
-.max-w-7xl,
-.mx-auto {
-    width: 100%;
-    max-width: 100%;
-}
-
-/* Garante espaçamento mínimo nos cards */
-.bg-white,
-.bg-\[var\(--bg-primary\)\],
-.bg-\[var\(--bg-secondary\)\] {
-    min-width: 0;
-}
-
-/* Garante que grids não sejam comprimidos */
-.grid {
-    width: 100%;
-}
-
-/* Calendário não pode ser achatado */
-.calendar-day {
-    min-width: 80px;
-    width: 100%;
-}
-
-/* Garante que o conteúdo das views tenha padding adequado */
-#mainContent > div {
-    padding: 1rem;
-    width: 100%;
-    box-sizing: border-box;
 }
 
 /* Card de Perfil do Usuário */
