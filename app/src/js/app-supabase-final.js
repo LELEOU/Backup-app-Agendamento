@@ -5,6 +5,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+    // 🚀 INICIALIZAR RECURSOS NATIVOS DO CAPACITOR
+    if (window.initCapacitorFeatures) {
+        try {
+            window.initCapacitorFeatures();
+            console.log('[APP] ✅ Recursos nativos inicializados');
+        } catch (error) {
+            console.log('[APP] ℹ️ Recursos nativos não disponíveis (modo web)');
+        }
+    }
+
     // Funções utilitárias
     function getLocalDateString(date) {
         const year = date.getFullYear();
@@ -2172,7 +2182,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="text-center">
                         <div class="mb-6">
                             <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-white/30 p-2">
-                                <img src="assets/imgs/icone-de-login.png" alt="Login Icon" class="w-12 h-12 object-contain">
+                                <img src="./assets/imgs/icone-de-login.png" alt="Login Icon" class="w-12 h-12 object-contain">
                             </div>
                         </div>
                         <h2 class="text-4xl font-bold text-white mb-2">${t.appName}</h2>
@@ -5435,38 +5445,38 @@ document.addEventListener('DOMContentLoaded', async () => {
             notificationsToggle.addEventListener('change', async (e) => {
                 if (e.target.checked) {
                     try {
-                        // Solicitar permissão diretamente usando a API nativa
-                        let permission;
+                        let permissionGranted = false;
                         
-                        // Tentar usar NotificationManager primeiro, senão usar API nativa
-                        if (window.NotificationManager && window.NotificationManager.requestPermission) {
-                            permission = await window.NotificationManager.requestPermission();
-                        } else {
-                            // Usar API nativa do navegador
-                            if (Notification.requestPermission) {
-                                permission = await Notification.requestPermission();
-                                permission = permission === 'granted';
-                            } else {
-                                // Fallback para navegadores mais antigos
-                                permission = Notification.permission === 'granted';
+                        // 🚀 USAR CAPACITOR LocalNotifications para APK
+                        if (window.requestNotificationPermission) {
+                            // Modo APK - usa Capacitor
+                            console.log('[NOTIFICAÇÕES] Usando Capacitor LocalNotifications');
+                            permissionGranted = await window.requestNotificationPermission();
+                        } else if (window.NotificationManager && window.NotificationManager.requestPermission) {
+                            // Modo Web - NotificationManager customizado
+                            console.log('[NOTIFICAÇÕES] Usando NotificationManager');
+                            permissionGranted = await window.NotificationManager.requestPermission();
+                        } else if ('Notification' in window) {
+                            // Fallback - API nativa do navegador
+                            console.log('[NOTIFICAÇÕES] Usando Notification API nativa');
+                            const permission = await Notification.requestPermission();
+                            permissionGranted = permission === 'granted';
+                            
+                            if (permissionGranted) {
+                                // Teste de notificação
+                                new Notification('Sistema de Agendamento', {
+                                    body: 'Notificações ativadas com sucesso!',
+                                    icon: './assets/imgs/logo.png'
+                                });
                             }
                         }
 
-                        if (!permission) {
+                        if (!permissionGranted) {
                             e.target.checked = false;
-                            showNotification('Permissão para notificações negada. Verifique as configurações do seu navegador.', 'error');
+                            showNotification('❌ Permissão para notificações negada', 'error');
                         } else {
-                            // Salvar preferência no localStorage
                             localStorage.setItem('notifications-enabled', 'true');
-                            showNotification('Notificações habilitadas com sucesso!');
-                            
-                            // Teste de notificação
-                            if (Notification.permission === 'granted') {
-                                new Notification('Sistema de Agendamento', {
-                                    body: 'Notificações ativadas com sucesso!',
-                                    icon: '/assets/imgs/logo.png'
-                                });
-                            }
+                            showNotification('✅ Notificações habilitadas com sucesso!', 'success');
                         }
                     } catch (error) {
                         console.error('Erro ao solicitar permissão de notificação:', error);
@@ -5907,7 +5917,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 `}
                                 <div class="flex-1">
                                     <input type="file" id="myPhotoInput" name="photo" accept="image/*" class="hidden">
-                                    <button type="button" onclick="document.getElementById('myPhotoInput').click()"
+                                    <button type="button" id="myPhotoButton"
                                         class="w-full px-4 py-2 text-sm font-medium text-white bg-[var(--accent-primary)] rounded-md hover:bg-[var(--accent-secondary)]">
                                         📸 Alterar Foto
                                     </button>
@@ -5935,7 +5945,46 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
         `);
 
-        // Preview da foto
+        // 📸 BOTÃO DE FOTO - Usar galeria nativa no APK
+        const myPhotoButton = document.getElementById('myPhotoButton');
+        const myPhotoInput = document.getElementById('myPhotoInput');
+        
+        if (myPhotoButton) {
+            myPhotoButton.addEventListener('click', async () => {
+                // Tentar usar galeria nativa primeiro (APK)
+                if (window.pickOrTakePhoto) {
+                    try {
+                        const photoData = await window.pickOrTakePhoto();
+                        
+                        // Atualizar preview
+                        const preview = document.getElementById('myPhotoPreview');
+                        if (preview) {
+                            preview.innerHTML = `<img src="${photoData}" alt="Preview" class="w-24 h-24 rounded-full object-cover">`;
+                            preview.className = "w-24 h-24 rounded-full overflow-hidden border-2 border-[var(--accent-primary)]";
+                        }
+                        
+                        // Salvar base64 para upload
+                        let hiddenInput = document.getElementById('myPhotoData');
+                        if (!hiddenInput) {
+                            hiddenInput = document.createElement('input');
+                            hiddenInput.type = 'hidden';
+                            hiddenInput.id = 'myPhotoData';
+                            hiddenInput.name = 'photoData';
+                            document.getElementById('myProfileForm').appendChild(hiddenInput);
+                        }
+                        hiddenInput.value = photoData;
+                        
+                    } catch (error) {
+                        console.log('Usuário cancelou');
+                    }
+                } else {
+                    // Fallback: input file (navegador)
+                    myPhotoInput.click();
+                }
+            });
+        }
+
+        // Preview da foto (fallback para navegador)
         const photoInput = document.getElementById('myPhotoInput');
         if (photoInput) {
             photoInput.addEventListener('change', (e) => {
@@ -6628,10 +6677,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-[var(--text-secondary)]">${t.selectStaff}</label>
-                            <select name="staff_id" required class="mt-1 block w-full border-[var(--border-color)] rounded-md shadow-sm px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]">
+                            <select id="staff-select" name="staff_id" required class="mt-1 block w-full border-[var(--border-color)] rounded-md shadow-sm px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]">
                                 <option value="" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]">${t.selectStaff}</option>
                                 ${getVisibleStaffForBooking().map(staff => 
-                                    `<option value="${staff.id}" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.staff_id === staff.id ? 'selected' : ''}>${staff.name} (${staff.role === 'manicurist' ? '💅 Manicure' : '💇 Cabeleireira'})</option>`
+                                    `<option value="${staff.id}" data-role="${staff.role}" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.staff_id === staff.id ? 'selected' : ''}>${staff.name} (${staff.role === 'manicurist' ? '💅 Manicure' : '💇 Cabeleireira'})</option>`
                                 ).join('')}
                             </select>
                         </div>
@@ -6657,17 +6706,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-[var(--text-secondary)]">⏱️ Duração (minutos)</label>
-                            <select name="duration" required class="mt-1 block w-full border-[var(--border-color)] rounded-md shadow-sm px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]">
-                                <option value="30" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.duration === 30 ? 'selected' : ''}>30 minutos (1 slot)</option>
-                                <option value="45" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.duration === 45 ? 'selected' : ''}>45 minutos (1,5 slots)</option>
-                                <option value="60" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.duration === 60 ? 'selected' : ''}>60 minutos (2 slots)</option>
-                                <option value="90" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.duration === 90 ? 'selected' : ''}>90 minutos (3 slots)</option>
-                                <option value="120" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.duration === 120 ? 'selected' : ''}>120 minutos (4 slots)</option>
-                                <option value="150" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.duration === 150 ? 'selected' : ''}>150 minutos (5 slots)</option>
-                                <option value="180" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.duration === 180 ? 'selected' : ''}>180 minutos (6 slots)</option>
+                            <select id="duration-select" name="duration" required class="mt-1 block w-full border-[var(--border-color)] rounded-md shadow-sm px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]">
+                                <option value="">Selecione o funcionário primeiro</option>
                             </select>
                             <p class="text-xs text-[var(--text-secondary)] mt-1 italic">
-                                💡 A duração bloqueia múltiplos slots consecutivos de 30 minutos
+                                💡 A duração varia conforme o tipo de profissional selecionado
                             </p>
                         </div>
                         <div>
@@ -6708,6 +6751,58 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             </div>
         `);
+
+        // ✨ FUNÇÃO PARA ATUALIZAR DURAÇÃO BASEADA NO CARGO DO FUNCIONÁRIO
+        function updateDurationOptions() {
+            const staffSelect = document.getElementById('staff-select');
+            const durationSelect = document.getElementById('duration-select');
+            
+            if (!staffSelect || !durationSelect) return;
+            
+            const selectedOption = staffSelect.options[staffSelect.selectedIndex];
+            const role = selectedOption?.dataset?.role;
+            
+            if (!role) {
+                durationSelect.innerHTML = '<option value="">Selecione o funcionário primeiro</option>';
+                return;
+            }
+            
+            let options = [];
+            let baseSlot = 0;
+            
+            if (role === 'manicurist') {
+                // Manicures: 45 minutos por slot
+                options = [
+                    { value: 45, label: '45 minutos (1 slot)' },
+                    { value: 90, label: '90 minutos (2 slots)' },
+                    { value: 135, label: '135 minutos (3 slots)' },
+                    { value: 180, label: '180 minutos (4 slots)' }
+                ];
+                baseSlot = 45;
+            } else if (role === 'hairdresser') {
+                // Cabeleireiras: 30 minutos por slot
+                options = [
+                    { value: 30, label: '30 minutos (1 slot)' },
+                    { value: 60, label: '60 minutos (2 slots)' },
+                    { value: 90, label: '90 minutos (3 slots)' },
+                    { value: 120, label: '120 minutos (4 slots)' }
+                ];
+                baseSlot = 30;
+            } else {
+                // Outro cargo: opções padrão
+                options = [
+                    { value: 30, label: '30 minutos' },
+                    { value: 45, label: '45 minutos' },
+                    { value: 60, label: '60 minutos' },
+                    { value: 90, label: '90 minutos' },
+                    { value: 120, label: '120 minutos' }
+                ];
+            }
+            
+            durationSelect.innerHTML = options.map(opt => 
+                `<option value="${opt.value}" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]">${opt.label}</option>`
+            ).join('');
+        }
 
         // Função para atualizar os horários disponíveis baseado no funcionário e data selecionados
         async function updateAvailableTimeSlots() {
@@ -6819,16 +6914,20 @@ document.addEventListener('DOMContentLoaded', async () => {
         const dateInput = document.querySelector('[name="date"]');
         
         if (staffSelect) {
-            staffSelect.addEventListener('change', updateAvailableTimeSlots);
+            staffSelect.addEventListener('change', () => {
+                updateAvailableTimeSlots();
+                updateDurationOptions(); // ✨ Atualiza durações quando muda funcionário
+            });
         }
         
         if (dateInput) {
             dateInput.addEventListener('change', updateAvailableTimeSlots);
         }
         
-        // Atualizar horários inicialmente se já tiver staff e data selecionados
+        // Atualizar horários e durações inicialmente se já tiver staff e data selecionados
         if (appointment?.staff_id && appointment?.date) {
             updateAvailableTimeSlots();
+            updateDurationOptions(); // ✨ Inicializa durações
         }
 
         document.getElementById('appointmentForm').addEventListener('submit', async (e) => {

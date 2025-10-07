@@ -166,3 +166,123 @@ body {
 #custom-confirm-modal button:active {
     transform: scale(0.95);
 }
+
+/* ✨ RESPONSIVIDADE MOBILE */
+@media (max-width: 768px) {
+    /* Reduzir tamanhos de fonte em telas pequenas */
+    body {
+        font-size: 14px;
+    }
+    
+    h1 {
+        font-size: 1.5rem !important;
+    }
+    
+    h2 {
+        font-size: 1.25rem !important;
+    }
+    
+    h3 {
+        font-size: 1.1rem !important;
+    }
+    
+    /* Calendário mais compacto */
+    .calendar-day {
+        min-height: 80px !important;
+        font-size: 0.75rem;
+    }
+    
+    /* Ajustar padding dos cards */
+    .bg-white, .bg-\[var\(--bg-primary\)\] {
+        padding: 1rem !important;
+    }
+    
+    /* Botões menores em mobile */
+    button {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* Inputs mais compactos */
+    input, select, textarea {
+        padding: 0.5rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* Modal ocupar mais espaço em mobile */
+    .max-w-2xl, .max-w-4xl, .max-w-6xl {
+        max-width: 95vw !important;
+        margin: 0.5rem !important;
+    }
+    
+    /* Tabelas responsivas */
+    table {
+        font-size: 0.75rem;
+    }
+    
+    th, td {
+        padding: 0.5rem !important;
+    }
+    
+    /* Sidebar em mobile */
+    aside {
+        font-size: 0.875rem;
+    }
+    
+    /* Espaçamento entre elementos */
+    .space-y-4 > * + * {
+        margin-top: 0.75rem !important;
+    }
+    
+    .space-x-4 > * + * {
+        margin-left: 0.75rem !important;
+    }
+    
+    /* Touch targets maiores (mínimo 44x44px para acessibilidade) */
+    button, a, input[type="checkbox"], input[type="radio"] {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    /* Grid de calendário em mobile */
+    .grid-cols-7 {
+        gap: 0.25rem !important;
+    }
+    
+    /* Ajustar agendamentos no calendário */
+    .calendar-day .text-xs {
+        font-size: 0.65rem !important;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Telas muito pequenas (smartphones) */
+    body {
+        font-size: 12px;
+    }
+    
+    h1 {
+        font-size: 1.25rem !important;
+    }
+    
+    .calendar-day {
+        min-height: 60px !important;
+        font-size: 0.65rem;
+    }
+    
+    /* Ocultar elementos menos importantes */
+    .hidden-xs {
+        display: none !important;
+    }
+    
+    /* Botões em coluna em vez de linha */
+    .flex.space-x-3 {
+        flex-direction: column !important;
+    }
+    
+    .flex.space-x-3 > * + * {
+        margin-left: 0 !important;
+        margin-top: 0.5rem !important;
+    }
+}
+

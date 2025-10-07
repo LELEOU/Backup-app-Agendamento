@@ -1,241 +1,485 @@
+# 💅 Estúdio Neila Vargas - Sistema de Agendamento# 💅 Sistema de Agendamento para Salões de Beleza
+
+
+
+<div align="center">**Uma solução completa e moderna para gerenciamento de salões de beleza**
+
 # 💅 Sistema de Agendamento para Salões de Beleza
 
+![Logo](app/src/assets/imgs/logo.png)
+
 <div align="center">
+
+**Sistema completo de gerenciamento para salões de beleza**
 
 ![Logo](src/assets/imgs/logo.png)
 
-[![GitHub license](https://img.shields.io/github/license/LELEOU/App-de-Agendamento)](https://github.com/LELEOU/App-de-Agendamento/blob/main/LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/LELEOU/App-de-Agendamento/pulls)
-[![Made with ❤️](https://img.shields.io/badge/Made%20with-❤️-red.svg)](https://github.com/LELEOU/App-de-Agendamento)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Uma solução completa e moderna para gerenciamento de salões de beleza**
+[![Capacitor](https://img.shields.io/badge/Capacitor-7.0.1-blue.svg)](https://capacitorjs.com/)[![GitHub license](https://img.shields.io/github/license/LELEOU/App-de-Agendamento)](https://github.com/LELEOU/App-de-Agendamento/blob/main/LICENSE)
 
-**✨ Atualizado em Janeiro 2025 com Slots Múltiplos, Sistema de Pausas e Comissões! ✨**
+[![Supabase](https://img.shields.io/badge/Supabase-2.x-green.svg)](https://supabase.com/)[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/LELEOU/App-de-Agendamento/pulls)
 
-[🚀 Demo ao Vivo](https://app-de-agendamento.vercel.app) • [📖 Documentação](https://github.com/LELEOU/App-de-Agendamento/wiki) • [🐛 Reportar Bug](https://github.com/LELEOU/App-de-Agendamento/issues)
+[![Status](https://img.shields.io/badge/status-production-success.svg)]()[![Made with ❤️](https://img.shields.io/badge/Made%20with-❤️-red.svg)](https://github.com/LELEOU/App-de-Agendamento)
 
-</div>
 
----
 
-## 🎉 Novidades da v1.0.0 (Janeiro 2025)
+[🚀 Características](#-características) • [📱 Download](#-instalação) • [🛠️ Tecnologias](#️-tecnologias) • [📖 Documentação](#-documentação)**Uma solução completa e moderna para gerenciamento de salões de beleza**
 
-<div align="center">
 
-### ⏱️ Sistema de Slots Múltiplos
-**Agendamentos com duração variável de 30 a 180 minutos!**
 
-Agora você pode criar agendamentos que ocupam múltiplos slots de 30 minutos, com visualização unificada e detecção inteligente de conflitos.
+</div>**✨ Atualizado em Janeiro 2025 com Slots Múltiplos, Sistema de Pausas e Comissões! ✨**
 
-### ⏸️ Sistema de Pausas/Handoffs
+
+
+---[🚀 Demo ao Vivo](https://app-de-agendamento.vercel.app) • [📖 Documentação](https://github.com/LELEOU/App-de-Agendamento/wiki) • [🐛 Reportar Bug](https://github.com/LELEOU/App-de-Agendamento/issues)
+
+
+
+## 📋 Sobre o Projeto</div>
+
+
+
+Sistema de agendamento profissional desenvolvido especificamente para o **Estúdio Neila Vargas**, com foco em gestão de salões de beleza. O aplicativo oferece uma experiência completa tanto na versão web quanto mobile (Android/iOS).---
+
+
+
+### ✨ Principais Diferenciais## 🎉 Novidades da v1.0.0 (Janeiro 2025)
+
+
+
+- 🎯 **Duração Inteligente**: Sistema dinâmico que ajusta as opções de duração conforme o tipo de profissional<div align="center">
+
+- 🔔 **Notificações Nativas**: Integração total com o sistema operacional (Android/iOS)
+
+- 📸 **Galeria Integrada**: Acesso à câmera e galeria do dispositivo### ⏱️ Sistema de Slots Múltiplos
+
+- 🔄 **Pull-to-Refresh**: Atualize os dados simplesmente puxando a tela**Agendamentos com duração variável de 30 a 180 minutos!**
+
+- 🎨 **Interface Moderna**: Design responsivo e intuitivo
+
+- 🌙 **Tema Escuro/Claro**: Alterne entre modos conforme sua preferênciaAgora você pode criar agendamentos que ocupam múltiplos slots de 30 minutos, com visualização unificada e detecção inteligente de conflitos.
+
+
+
+---### ⏸️ Sistema de Pausas/Handoffs
+
 **Pause atendimentos e libere profissionais!**
+
+## 🚀 Características
 
 Durante um atendimento, é possível criar pausas (ex: secagem de esmalte) para que o profissional possa atender outros clientes.
 
-### 💰 Sistema de Comissões
-**Cálculo automático de ganhos por profissional!**
+### Para Administradores
 
-Relatórios detalhados de comissões com percentuais configuráveis por tipo de serviço.
+- ✅ Gestão completa de agendamentos### 💰 Sistema de Comissões
 
-</div>
+- ✅ Cadastro de clientes, serviços e funcionários**Cálculo automático de ganhos por profissional!**
+
+- ✅ Controle de comissões
+
+- ✅ Relatórios e históricoRelatórios detalhados de comissões com percentuais configuráveis por tipo de serviço.
+
+- ✅ Configuração de horários customizados
+
+- ✅ Gestão de permissões</div>
+
+
+
+### Para Recepcionistas---
+
+- ✅ Criar e editar agendamentos
+
+- ✅ Visualizar agenda de todos os funcionários## 📋 Índice
+
+- ✅ Cadastro de novos clientes
+
+- [� Novidades](#-novidades-da-v100-janeiro-2025)
+
+### Para Profissionais- [�🌟 Características](#-características)
+
+- ✅ Visualizar apenas seus próprios agendamentos- [🚀 Tecnologias](#-tecnologias)
+
+- ✅ Atualizar status dos atendimentos- [📦 Instalação](#-instalação)
+
+- ✅ Gerenciar perfil pessoal- [⚙️ Configuração](#️-configuração)
+
+- [🔧 Uso](#-uso)
+
+### Para Clientes (PWA)- [🏗️ Arquitetura](#️-arquitetura)
+
+- ✅ Agendar serviços online- [🔒 Segurança](#-segurança)
+
+- ✅ Visualizar histórico de atendimentos- [🌐 Deploy](#-deploy)
+
+- ✅ Receber notificações de confirmação- [🤝 Contribuição](#-contribuição)
+
+- [📊 Roadmap](#-roadmap)
+
+---- [📄 Licença](#-licença)
+
+
+
+## 📱 Instalação## 🌟 Características
+
+
+
+### Android (APK)### 📅 **Agendamento Inteligente** ⭐ NOVO
+
+```bash- ⏱️ **Sistema de Slots Múltiplos** - Duração variável de 30 a 180 minutos
+
+# Clone o repositório- 🎯 **Blocos Visuais Unificados** - Visualização clara de agendamentos longos
+
+git clone https://github.com/LELEOU/Backup-app-Agendamento.git- 🔄 **Detecção Inteligente de Conflitos** - Valida todos os slots ocupados
+
+- ⏸️ **Sistema de Pausas/Handoffs** - Permite pausar atendimentos e liberar profissional
+
+# Entre na pasta do app- 📱 Interface intuitiva para marcação de horários
+
+cd Backup-app-Agendamento/app- 📊 Visualização em calendário mensal/semanal
+
+- 🚫 Limite de uma solicitação por dia para evitar spam
+
+# Instale as dependências
+
+npm install### 👥 **Gestão de Usuários**
+
+- 🔐 Sistema de permissões por função (Admin, Manicure, Recepcionista)
+
+# Compile o projeto- 👤 Perfis personalizados para clientes e funcionários
+
+npm run build- 🎯 Controle de acesso granular por seção
+
+- 📋 Matriz completa de permissões
+
+# Sincronize com Android
+
+npx cap sync android### 💰 **Sistema de Comissões** ⭐ NOVO
+
+- 💵 Cálculo automático de comissões por profissional
+
+# Gere o APK- 📊 Relatórios detalhados de ganhos
+
+cd android- 🎯 Percentuais configuráveis por tipo de serviço
+
+.\gradlew.bat assembleDebug- 💳 Histórico completo de pagamentos
+
+```
+
+### 📊 **Relatórios e Analytics**
+
+O APK estará em: `app/android/app/build/outputs/apk/debug/app-debug.apk`- 📈 Dashboard com métricas em tempo real
+
+- 👩‍💼 Relatórios individuais por manicure
+
+### Web (PWA)- 📉 Análise de performance e produtividade
+
+Acesse: [https://seu-dominio.com](#) *(em breve)*- 📁 Exportação de dados em múltiplos formatos
+
+- 💰 Relatórios financeiros e de comissões
 
 ---
 
-## 📋 Índice
-
-- [� Novidades](#-novidades-da-v100-janeiro-2025)
-- [�🌟 Características](#-características)
-- [🚀 Tecnologias](#-tecnologias)
-- [📦 Instalação](#-instalação)
-- [⚙️ Configuração](#️-configuração)
-- [🔧 Uso](#-uso)
-- [🏗️ Arquitetura](#️-arquitetura)
-- [🔒 Segurança](#-segurança)
-- [🌐 Deploy](#-deploy)
-- [🤝 Contribuição](#-contribuição)
-- [📊 Roadmap](#-roadmap)
-- [📄 Licença](#-licença)
-
-## 🌟 Características
-
-### 📅 **Agendamento Inteligente** ⭐ NOVO
-- ⏱️ **Sistema de Slots Múltiplos** - Duração variável de 30 a 180 minutos
-- 🎯 **Blocos Visuais Unificados** - Visualização clara de agendamentos longos
-- 🔄 **Detecção Inteligente de Conflitos** - Valida todos os slots ocupados
-- ⏸️ **Sistema de Pausas/Handoffs** - Permite pausar atendimentos e liberar profissional
-- 📱 Interface intuitiva para marcação de horários
-- 📊 Visualização em calendário mensal/semanal
-- 🚫 Limite de uma solicitação por dia para evitar spam
-
-### 👥 **Gestão de Usuários**
-- 🔐 Sistema de permissões por função (Admin, Manicure, Recepcionista)
-- 👤 Perfis personalizados para clientes e funcionários
-- 🎯 Controle de acesso granular por seção
-- 📋 Matriz completa de permissões
-
-### 💰 **Sistema de Comissões** ⭐ NOVO
-- 💵 Cálculo automático de comissões por profissional
-- 📊 Relatórios detalhados de ganhos
-- 🎯 Percentuais configuráveis por tipo de serviço
-- 💳 Histórico completo de pagamentos
-
-### 📊 **Relatórios e Analytics**
-- 📈 Dashboard com métricas em tempo real
-- 👩‍💼 Relatórios individuais por manicure
-- 📉 Análise de performance e produtividade
-- 📁 Exportação de dados em múltiplos formatos
-- 💰 Relatórios financeiros e de comissões
-
 ### 📱 **Progressive Web App (PWA)**
-- Funciona offline com sincronização automática
+
+## 🛠️ Tecnologias- Funciona offline com sincronização automática
+
 - Instalável em qualquer dispositivo
-- Notificações push nativas
-- Interface responsiva (mobile-first)
 
-### 🎨 **Experiência do Usuário**
+### Frontend- Notificações push nativas
+
+- **Vite** - Build tool ultrarrápido- Interface responsiva (mobile-first)
+
+- **Tailwind CSS 3.4** - Framework CSS utilitário
+
+- **Vanilla JavaScript** - Sem frameworks pesados, máxima performance### 🎨 **Experiência do Usuário**
+
 - Tema escuro/claro com transições suaves
-- Suporte a múltiplos idiomas (PT-BR, EN-US)
-- Animações fluidas e feedback visual
-- Acessibilidade (WCAG 2.1)
 
-### 🔔 **Sistema de Notificações**
-- Notificações push em tempo real
+### Backend- Suporte a múltiplos idiomas (PT-BR, EN-US)
+
+- **Supabase** - Backend-as-a-Service- Animações fluidas e feedback visual
+
+  - PostgreSQL Database- Acessibilidade (WCAG 2.1)
+
+  - Authentication
+
+  - Storage### 🔔 **Sistema de Notificações**
+
+  - Real-time subscriptions- Notificações push em tempo real
+
 - Lembretes automáticos de agendamentos
-- Fallback para notificações nativas do browser
-- Configurações personalizáveis por usuário
 
-## 🚀 Tecnologias
+### Mobile- Fallback para notificações nativas do browser
 
-### **Frontend**
+- **Capacitor 7** - Framework nativo- Configurações personalizáveis por usuário
+
+  - `@capacitor/camera` - Câmera e galeria
+
+  - `@capacitor/local-notifications` - Notificações nativas## 🚀 Tecnologias
+
+  - `@capacitor/haptics` - Feedback tátil
+
+  - `@capacitor/splash-screen` - Tela de carregamento### **Frontend**
+
 - **JavaScript Vanilla** - Performance máxima sem frameworks pesados
-- **HTML5** - Semântica moderna e acessibilidade
-- **CSS3** - Animações e layouts avançados
-- **TailwindCSS** - Estilização utilitária e responsiva
+
+### Infraestrutura- **HTML5** - Semântica moderna e acessibilidade
+
+- **Java 21** - Necessário para Capacitor 7- **CSS3** - Animações e layouts avançados
+
+- **Gradle 8.11** - Build system Android- **TailwindCSS** - Estilização utilitária e responsiva
+
+- **Android SDK** - Desenvolvimento Android
 
 ### **Backend & Banco de Dados**
-- **Supabase** - Backend-as-a-Service com PostgreSQL
+
+---- **Supabase** - Backend-as-a-Service com PostgreSQL
+
 - **Row Level Security (RLS)** - Segurança nativa do PostgreSQL
-- **Real-time subscriptions** - Atualizações em tempo real
+
+## 📖 Documentação- **Real-time subscriptions** - Atualizações em tempo real
+
 - **Edge Functions** - Processamento serverless
 
-### **Build & Deploy**
-- **Vite** - Build tool moderna e rápida
+- [📱 SETUP.md](SETUP.md) - Guia completo de instalação e configuração
+
+- [🚀 FEATURES.md](FEATURES.md) - Documentação de todas as funcionalidades### **Build & Deploy**
+
+- [🔄 CHANGELOG.md](CHANGELOG.md) - Histórico de mudanças- **Vite** - Build tool moderna e rápida
+
 - **Service Workers** - Cache inteligente e funcionamento offline
-- **Web App Manifest** - Instalação PWA
+
+---- **Web App Manifest** - Instalação PWA
+
 - **Environment Variables** - Configuração segura
 
-### **Qualidade & Ferramentas**
-- **ESLint** - Padronização de código
-- **Prettier** - Formatação automática
-- **Git Hooks** - Validação pré-commit
-- **Semantic Versioning** - Versionamento consistente
+## 🎯 Recursos Implementados (v2.0)
 
-## 📦 Instalação
+### **Qualidade & Ferramentas**
+
+### ✅ Duração por Cargo Profissional- **ESLint** - Padronização de código
+
+Sistema inteligente que mostra apenas as durações relevantes:- **Prettier** - Formatação automática
+
+- **Manicures**: 45, 90, 135, 180 minutos- **Git Hooks** - Validação pré-commit
+
+- **Cabeleireiras**: 30, 60, 90, 120 minutos- **Semantic Versioning** - Versionamento consistente
+
+
+
+### ✅ Pull-to-Refresh## 📦 Instalação
+
+Puxe a tela para baixo para recarregar dados (funciona no APK)
 
 ### **Pré-requisitos**
-- Node.js 18+ 
-- npm ou yarn
-- Conta no Supabase
+
+### ✅ Notificações do Sistema- Node.js 18+ 
+
+- Permissão real do Android/iOS- npm ou yarn
+
+- Funciona com app fechado- Conta no Supabase
+
+- Notificação de teste ao ativar
 
 ### **Passo a passo**
 
-1. **Clone o repositório**
-```bash
-git clone https://github.com/LELEOU/App-de-Agendamento.git
+### ✅ Galeria Nativa
+
+- Selecionar fotos da galeria1. **Clone o repositório**
+
+- Tirar fotos com câmera```bash
+
+- Edição antes de enviargit clone https://github.com/LELEOU/App-de-Agendamento.git
+
 cd App-de-Agendamento
-```
 
-2. **Instale as dependências**
-```bash
+### ✅ Interface Responsiva```
+
+- Otimizada para tablets (≤768px)
+
+- Otimizada para smartphones (≤480px)2. **Instale as dependências**
+
+- Touch targets de 44x44px (padrão mobile)```bash
+
 npm install
-```
 
-3. **Configure as variáveis de ambiente**
+---```
+
+
+
+## 📂 Estrutura do Projeto3. **Configure as variáveis de ambiente**
+
 ```bash
-cp .env.example .env
-# Edite o arquivo .env com suas credenciais
-```
 
-4. **Configure o banco de dados**
-```bash
-# Execute o script SQL no seu projeto Supabase
-# Arquivo: src/database-setup.sql
-```
+```cp .env.example .env
 
-5. **Inicie o servidor de desenvolvimento**
-```bash
-npm run dev
-```
+Backup-app-Agendamento/# Edite o arquivo .env com suas credenciais
 
-6. **Acesse a aplicação**
-```
-http://localhost:5173
+├── app/                          # Aplicativo principal```
+
+│   ├── src/
+
+│   │   ├── assets/              # Imagens e recursos4. **Configure o banco de dados**
+
+│   │   ├── css/                 # Estilos```bash
+
+│   │   ├── js/                  # Lógica da aplicação# Execute o script SQL no seu projeto Supabase
+
+│   │   │   ├── capacitor-features.js  # Recursos nativos# Arquivo: src/database-setup.sql
+
+│   │   │   ├── supabase-config.js     # Configuração Supabase```
+
+│   │   │   └── app-supabase-final.js  # App principal
+
+│   │   └── index.html5. **Inicie o servidor de desenvolvimento**
+
+│   ├── android/                 # Projeto Android```bash
+
+│   ├── resources/               # Ícones e splash screensnpm run dev
+
+│   └── capacitor.config.json```
+
+├── docs/                        # Documentação
+
+├── README.md                    # Este arquivo6. **Acesse a aplicação**
+
+├── SETUP.md                     # Guia de instalação```
+
+├── FEATURES.md                  # Documentação de recursoshttp://localhost:5173
+
+└── CHANGELOG.md                 # Histórico de versões```
+
 ```
 
 ## ⚙️ Configuração
 
+---
+
 ### **Variáveis de Ambiente**
+
+## 🔧 Variáveis de Ambiente
 
 Crie um arquivo `.env` baseado no `.env.example`:
 
+Crie um arquivo `.env` (ou configure diretamente em `supabase-config.js`):
+
 ```env
-# Configurações do Supabase (OBRIGATÓRIO)
-VITE_SUPABASE_URL=https://your-project-ref.supabase.co
-VITE_SUPABASE_ANON_KEY=your-anon-key-here
+
+```env# Configurações do Supabase (OBRIGATÓRIO)
+
+SUPABASE_URL=https://seu-projeto.supabase.coVITE_SUPABASE_URL=https://your-project-ref.supabase.co
+
+SUPABASE_ANON_KEY=sua-chave-publicaVITE_SUPABASE_ANON_KEY=your-anon-key-here
+
+```
 
 # Configurações opcionais
-VITE_APP_TITLE=Sistema de Agendamento para Salões
+
+---VITE_APP_TITLE=Sistema de Agendamento para Salões
+
 VITE_APP_VERSION=1.0.0
-```
 
-### **Configuração do Supabase**
+## 🤝 Contribuindo```
 
-1. **Crie um projeto no [Supabase](https://supabase.com)**
 
-2. **Execute o script de configuração do banco**
-   - Acesse o SQL Editor no dashboard do Supabase
-   - Execute o conteúdo do arquivo `src/database-setup.sql`
 
-3. **Configure as políticas RLS**
+Contribuições são bem-vindas! Veja [CONTRIBUTING.md](CONTRIBUTING.md) para detalhes.### **Configuração do Supabase**
+
+
+
+1. Fork o projeto1. **Crie um projeto no [Supabase](https://supabase.com)**
+
+2. Crie uma branch (`git checkout -b feature/NovaFuncionalidade`)
+
+3. Commit suas mudanças (`git commit -m 'Adiciona nova funcionalidade'`)2. **Execute o script de configuração do banco**
+
+4. Push para a branch (`git push origin feature/NovaFuncionalidade`)   - Acesse o SQL Editor no dashboard do Supabase
+
+5. Abra um Pull Request   - Execute o conteúdo do arquivo `src/database-setup.sql`
+
+
+
+---3. **Configure as políticas RLS**
+
    - As políticas de segurança já estão incluídas no script SQL
-   - Verifique se estão ativas na seção Authentication
 
-4. **Obtenha suas credenciais**
+## 📄 Licença   - Verifique se estão ativas na seção Authentication
+
+
+
+Este projeto está sob a licença MIT. Veja [LICENSE](LICENSE) para mais detalhes.4. **Obtenha suas credenciais**
+
    - Acesse Settings > API
-   - Copie a URL do projeto e a chave anônima
 
-### **Estrutura do Banco de Dados**
+---   - Copie a URL do projeto e a chave anônima
 
-```sql
--- Principais tabelas
-users                  -- Usuários do sistema
+
+
+## 👥 Autores### **Estrutura do Banco de Dados**
+
+
+
+**Estúdio Neila Vargas**```sql
+
+- Website: [em breve](#)-- Principais tabelas
+
+- Instagram: [@neilavargas](#)users                  -- Usuários do sistema
+
 appointments           -- Agendamentos (com duration para slots múltiplos)
-appointment_handoffs   -- Sistema de pausas/handoffs (NOVO)
-services              -- Serviços oferecidos
+
+**Desenvolvimento**appointment_handoffs   -- Sistema de pausas/handoffs (NOVO)
+
+- GitHub: [@LELEOU](https://github.com/LELEOU)services              -- Serviços oferecidos
+
 schedules             -- Horários disponíveis
-notifications         -- Notificações
+
+---notifications         -- Notificações
+
 settings              -- Configurações do sistema
-commissions           -- Comissões por profissional (NOVO)
+
+## 📞 Suportecommissions           -- Comissões por profissional (NOVO)
+
 ```
+
+Encontrou um bug ou tem uma sugestão? Abra uma [issue](https://github.com/LELEOU/Backup-app-Agendamento/issues)!
 
 ## 🔧 Uso
 
+---
+
 ### **Acesso por Função**
 
+## 🙏 Agradecimentos
+
 #### 👑 **Administrador**
-- Acesso total ao sistema
-- Gerenciamento de usuários e permissões
-- Configurações globais
+
+- [Capacitor](https://capacitorjs.com/) - Framework mobile híbrido- Acesso total ao sistema
+
+- [Supabase](https://supabase.com/) - Backend as a Service- Gerenciamento de usuários e permissões
+
+- [Tailwind CSS](https://tailwindcss.com/) - Framework CSS- Configurações globais
+
 - Relatórios completos
 
-#### 💅 **Manicure**
-- Visualização dos próprios agendamentos
-- Acesso aos relatórios pessoais
-- Atualização de status dos serviços
+---
 
-#### 📞 **Recepcionista**
+#### 💅 **Manicure**
+
+<div align="center">- Visualização dos próprios agendamentos
+
+- Acesso aos relatórios pessoais
+
+**Feito com ❤️ para salões de beleza**- Atualização de status dos serviços
+
+
+
+⭐ Se este projeto foi útil, deixe uma estrela!#### 📞 **Recepcionista**
+
 - Criação e edição de agendamentos
-- Gerenciamento de clientes
+
+</div>- Gerenciamento de clientes
+
 - Visualização de agenda geral
 
 ### **Fluxo Principal**

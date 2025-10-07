@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Agenda de Salão</title>
+    <title>Estúdio Neila Vargas</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#8a4fff">
     
@@ -25,8 +25,21 @@
     <link rel="apple-touch-icon" sizes="180x180" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%238a4fff'/%3E%3Ctext x='90' y='120' font-family='Arial' font-size='95' font-weight='bold' text-anchor='middle' fill='white'%3ES%3C/text%3E%3C/svg%3E">
     
     <!-- Favicons -->
-    <link rel="icon" type="image/x-icon" href="assets/icon/favicon.ico">
-    <link rel="shortcut icon" href="assets/icon/favicon.ico">
+        <link rel="icon" type="image/png" href="assets/icon/favicon.png" sizes="32x32">
+        <link rel="shortcut icon" href="assets/icon/favicon.png" sizes="32x32">
+        <style>
+            /* Favicon arredondado para browsers que suportam */
+            link[rel~="icon"] {
+                border-radius: 50%;
+                overflow: hidden;
+            }
+            @media (max-width: 600px) {
+                link[rel~="icon"] {
+                    width: 24px;
+                    height: 24px;
+                }
+            }
+        </style>
     
     <!-- Tailwind CSS agora é processado via PostCSS no build -->
     <!-- Removido CDN para produção - configurado em tailwind.config.js -->
@@ -37,6 +50,8 @@
     
     <!-- Scripts da aplicação -->
     <script type="module" src="./js/supabase-config.js"></script>
+    <!-- Recursos Nativos do Capacitor -->
+    <script type="module" src="./js/capacitor-features.js"></script>
     <!-- Sistema de Traduções -->
     <script type="module" src="./js/translations/translation-config.js"></script>
     <script type="module" src="./js/translations/pt-BR.js"></script>
@@ -63,12 +78,10 @@
         <aside class="w-64 bg-[var(--bg-secondary)] border-r border-[var(--border-color)] flex flex-col fixed h-full z-20">
             <div class="p-4 border-b border-[var(--border-color)]">
                 <div class="flex items-center">
-                    <div class="w-10 h-10 rounded-full bg-[var(--accent-primary)] flex items-center justify-center text-white font-bold text-xl mr-3">
-                        S
-                    </div>
+                    <img src="./assets/imgs/NovoS.jpg" alt="Logo" class="w-10 h-10 rounded-full object-cover mr-3 border-2 border-[var(--accent-primary)]">
                     <div>
-                        <h1 class="font-bold text-lg text-[var(--text-primary)]" data-translate="appName">Salão</h1>
-                        <p class="text-xs text-[var(--text-secondary)]" data-translate="appSubtitle">Gerenciamento</p>
+                        <h1 class="font-bold text-lg text-[var(--text-primary)]" data-translate="appName">Neila Vargas</h1>
+                        <p class="text-xs text-[var(--text-secondary)]" data-translate="appSubtitle">Estúdio de Beleza</p>
                     </div>
                 </div>
             </div>
