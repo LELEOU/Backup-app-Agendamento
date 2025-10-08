@@ -1,3 +1,6 @@
+import './capacitor-features.js';
+import { supabase } from './supabase-config.js';
+
 document.addEventListener('DOMContentLoaded', async () => {
     // Verifica se o Supabase foi carregado
     if (!window.supabase) {
@@ -5,7 +8,17 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // 🚀 INICIALIZAR MENU HAMBÚRGUER RESPONSIVO
+    // � INICIALIZAR SISTEMA DE NOTIFICAÇÕES
+    if (window.NotificationIntegration) {
+        try {
+            window.NotificationIntegration.init();
+            console.log('[APP] ✅ Sistema de notificações inicializado');
+        } catch (error) {
+            console.error('[APP] ❌ Erro ao inicializar notificações:', error);
+        }
+    }
+
+    // �🚀 INICIALIZAR MENU HAMBÚRGUER RESPONSIVO
     initMobileMenu();
 
     // 🚀 INICIALIZAR RECURSOS NATIVOS DO CAPACITOR
@@ -33,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             menuToggle.addEventListener('click', () => {
                 sidebar?.classList.add('active');
                 sidebarOverlay?.classList.add('active');
-                document.body.style.overflow = 'hidden'; // Previne scroll do body
+                document.body.classList.add('sidebar-open'); // Previne scroll do body via CSS
             });
         }
 
@@ -59,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         function closeSidebar() {
             sidebar?.classList.remove('active');
             sidebarOverlay?.classList.remove('active');
-            document.body.style.overflow = ''; // Restaura scroll
+            document.body.classList.remove('sidebar-open'); // Restaura scroll
         }
 
         // Fechar ao pressionar ESC
@@ -69,9 +82,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         });
 
-        // Ajustar ao redimensionar janela
+        // Ajustar ao redimensionar janela (usar breakpoint mais conservador)
         window.addEventListener('resize', () => {
-            if (window.innerWidth > 1024) {
+            // Se largura for maior que 900px, fechar o menu mobile automaticamente
+            if (window.innerWidth > 900) {
                 closeSidebar();
             }
         });
@@ -209,7 +223,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Se não há nenhum staff, não mostra filtros
         if (manicurists.length === 0 && hairdressers.length === 0) return;
         
-        let filtersHtml = '<div class="mb-4 p-4 bg-[var(--bg-secondary)] rounded-lg"><div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
+        let filtersHtml = '<div class="filter-container mb-6"><div class="grid grid-cols-1 md:grid-cols-2 gap-4">';
         
         // Filtro de Manicures
         if (manicurists.length > 0) {
@@ -218,13 +232,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <label class="block text-sm font-medium text-[var(--text-primary)] mb-2">
                         💅 ${t.filterByManicurist || 'Filtrar por Manicure'}:
                     </label>
-                    <select id="manicuristFilter" class="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--bg-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] transition-all" onchange="filterByManicurist(this.value)">
-                        <option value="all">${t.allManicurists || 'Todas as Manicures'}</option>
-                        ${manicurists.map(m => `
-                            <option value="${m.id}" ${appState.selectedManicuristId === m.id ? 'selected' : ''}>
-                                ${m.name} (⏱️ 45min)
-                            </option>
-                        `).join('')}
+                    <select id="manicuristFilter" 
+                        onchange="filterByManicurist(this.value)"
+                        class="block w-full border-[var(--border-color)] rounded-md shadow-sm px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]">
+                        <option value="all" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]">${t.allManicurists || 'Todas as Manicures'}</option>
+                        ${manicurists.map(m => 
+                            `<option value="${m.id}" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appState.selectedManicuristId === m.id ? 'selected' : ''}>${m.name} (⏱️ 45min)</option>`
+                        ).join('')}
                     </select>
                 </div>
             `;
@@ -237,13 +251,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <label class="block text-sm font-medium text-[var(--text-primary)] mb-2">
                         ✂️ ${t.filterByHairdresser || 'Filtrar por Cabeleireira'}:
                     </label>
-                    <select id="hairdresserFilter" class="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--bg-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] transition-all" onchange="filterByHairdresser(this.value)">
-                        <option value="all">${t.allHairdressers || 'Todas as Cabeleireiras'}</option>
-                        ${hairdressers.map(h => `
-                            <option value="${h.id}" ${appState.selectedHairdresserId === h.id ? 'selected' : ''}>
-                                ${h.name} (⏱️ 30min)
-                            </option>
-                        `).join('')}
+                    <select id="hairdresserFilter"
+                        onchange="filterByHairdresser(this.value)"
+                        class="block w-full border-[var(--border-color)] rounded-md shadow-sm px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]">
+                        <option value="all" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]">${t.allHairdressers || 'Todas as Cabeleireiras'}</option>
+                        ${hairdressers.map(h => 
+                            `<option value="${h.id}" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appState.selectedHairdresserId === h.id ? 'selected' : ''}>${h.name} (⏱️ 30min)</option>`
+                        ).join('')}
                     </select>
                 </div>
             `;
@@ -255,6 +269,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const calendarContainer = dom.calendarContainer;
         if (!document.getElementById('manicuristFilter') && !document.getElementById('hairdresserFilter')) {
             calendarContainer.insertAdjacentHTML('beforebegin', filtersHtml);
+            // ❌ FlyonUI removido - usando selects nativos
         }
     }
 
@@ -471,7 +486,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const avgTicket = totalVisits > 0 ? totalSpent / totalVisits : 0;
             
             showModal(`
-                <div class="bg-[var(--bg-primary)] rounded-lg max-w-5xl w-full mx-4 border border-[var(--border-color)] max-h-[90vh] overflow-y-auto">
+                <div class="modal-content bg-[var(--bg-primary)] rounded-lg max-w-5xl w-full mx-4 border border-[var(--border-color)]">
                     <div class="p-6">
                         <!-- Header -->
                         <div class="flex justify-between items-center mb-6 pb-4 border-b border-[var(--border-color)]">
@@ -2070,8 +2085,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     .select('*')
                     .eq('staff_id', staffId)
                     .eq('date', date)
-                    .single();
-                if (error && error.code !== 'PGRST116') throw error; // PGRST116 = não encontrado
+                    .maybeSingle(); // ✅ CORRIGIDO: maybeSingle() não dá erro 406 quando não encontra
+                
+                // maybeSingle() retorna null se não encontrar, não precisa verificar error.code
+                if (error) {
+                    console.warn('Erro ao buscar horário do dia:', error);
+                    return null;
+                }
                 return data;
             } catch (error) {
                 console.error('Erro ao buscar horário do dia:', error);
@@ -2176,14 +2196,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         checkAuthStatus();
         updateCurrentDate();
         
+        // Listener para mudanças de autenticação (login/logout)
+        window.supabase.auth.onAuthStateChange((event, session) => {
+            // console.log('[Auth] Estado alterado:', event, session ? 'Sessão ativa' : 'Sem sessão');
+            
+            if (event === 'SIGNED_IN' && session) {
+                // ⚠️ REMOVIDO: console.log('[Auth] Usuário logado:', session.user.email); // SEGURANÇA: Não logar emails
+                appState.currentUser = session.user;
+            } else if (event === 'SIGNED_OUT') {
+                // console.log('[Auth] Usuário deslogado');
+                appState.currentUser = null;
+                showLogin();
+            } else if (event === 'TOKEN_REFRESHED') {
+                // console.log('[Auth] Token atualizado');
+            }
+        });
+        
         // Atualizar contador de notificações
         setTimeout(() => updateNotificationBellCount(), 1000);
         
         // Adicionar listener para mudanças de idioma
         document.addEventListener('languageChanged', (e) => {
-            console.log('🌐 Sistema de Tradução: Idioma alterado para:', e.detail.language);
-            console.log('🌐 Traduções disponíveis:', Object.keys(window.translations || {}));
-            console.log('🌐 Testando tradução "calendar":', getTranslation('calendar'));
+            // console.log('🌐 Sistema de Tradução: Idioma alterado para:', e.detail.language);
+            // console.log('🌐 Traduções disponíveis:', Object.keys(window.translations || {}));
+            // console.log('🌐 Testando tradução "calendar":', getTranslation('calendar'));
             
             // Atualizar todos os elementos com tradução
             updateAllTranslations();
@@ -2192,19 +2228,41 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     async function checkAuthStatus() {
         try {
-            const { data: { user }, error } = await window.supabase.auth.getUser();
-            if (error) throw error;
+            // Primeiro verifica se existe uma sessão válida
+            const { data: { session }, error: sessionError } = await window.supabase.auth.getSession();
             
-            if (user) {
-                appState.currentUser = user;
-                showApp();
-                await loadInitialData();
-                showView('calendarView');
-            } else {
+            if (sessionError) {
+                // console.log('[Auth] Erro ao buscar sessão:', sessionError.message);
                 showLogin();
+                return;
             }
+            
+            // Se não tem sessão, mostra login
+            if (!session) {
+                // console.log('[Auth] Nenhuma sessão encontrada');
+                showLogin();
+                return;
+            }
+            
+            // Se tem sessão, busca os dados do usuário
+            const { data: { user }, error: userError } = await window.supabase.auth.getUser();
+            
+            if (userError || !user) {
+                // console.log('[Auth] Erro ao buscar usuário:', userError?.message);
+                showLogin();
+                return;
+            }
+            
+            // Usuário autenticado com sucesso
+            // ⚠️ REMOVIDO: console.log('[Auth] Usuário autenticado:', user.email); // SEGURANÇA: Não logar emails
+            appState.currentUser = user;
+            showApp();
+            await loadInitialData();
+            setupRealtimeSync(); // 🔄 Ativar sincronização em tempo real
+            showView('calendarView');
+            
         } catch (error) {
-            console.error('Erro ao verificar status de autenticação:', error);
+            console.error('[Auth] Erro inesperado:', error);
             showLogin();
         }
     }
@@ -2246,7 +2304,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="text-center">
                         <div class="mb-6">
                             <div class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm border border-white/30 p-2">
-                                <img src="./assets/imgs/icone-de-login.png" alt="Login Icon" class="w-12 h-12 object-contain">
+                                <img src="/assets/imgs/icone-de-login.png" alt="Login Icon" class="w-12 h-12 object-contain">
                             </div>
                         </div>
                         <h2 class="text-4xl font-bold text-white mb-2">${t.appName}</h2>
@@ -2332,6 +2390,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             appState.currentUser = data.user;
             showApp();
             await loadInitialData();
+            setupRealtimeSync(); // 🔄 Ativar sincronização em tempo real
             showView('calendarView');
         } catch (error) {
             const errorDiv = document.getElementById('loginError');
@@ -2480,6 +2539,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 appState.currentUser = user;
                 showApp();
                 await loadInitialData();
+                setupRealtimeSync(); // 🔄 Ativar sincronização em tempo real
                 showView('calendarView');
             }
         } catch (error) {
@@ -2931,6 +2991,142 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
 
+    // 🔄 CONFIGURAÇÃO DE ATUALIZAÇÃO EM TEMPO REAL (SUPABASE REALTIME)
+    function setupRealtimeSync() {
+        console.log('[REALTIME] 🔄 Configurando sincronização em tempo real...');
+        
+        // Canal para mudanças em appointments
+        const appointmentsChannel = window.supabase
+            .channel('appointments_changes')
+            .on('postgres_changes', 
+                { event: '*', schema: 'public', table: 'appointments' },
+                async (payload) => {
+                    console.log('[REALTIME] 📅 Mudança em appointments:', payload.eventType, payload);
+                    
+                    try {
+                        // Recarregar appointments do banco
+                        appState.appointments = await db.getAppointments();
+                        
+                        // Atualizar visualização se estiver no calendário
+                        if (appState.currentView === 'calendarView') {
+                            renderCalendar();
+                        }
+                        
+                        // Se for INSERT e for para a funcionária logada, notificar
+                        if (payload.eventType === 'INSERT' && payload.new) {
+                            const appointment = payload.new;
+                            const currentStaff = appState.staff.find(s => 
+                                s.user_id === appState.currentUser?.id
+                            );
+                            
+                            if (currentStaff && appointment.staff_id === currentStaff.id) {
+                                if (window.NotificationIntegration) {
+                                    window.NotificationIntegration.onAppointmentCreated(appointment);
+                                }
+                            }
+                        }
+                        
+                        // Se for UPDATE, notificar
+                        if (payload.eventType === 'UPDATE' && payload.new) {
+                            const appointment = payload.new;
+                            const currentStaff = appState.staff.find(s => 
+                                s.user_id === appState.currentUser?.id
+                            );
+                            
+                            if (currentStaff && appointment.staff_id === currentStaff.id) {
+                                if (window.NotificationIntegration) {
+                                    window.NotificationIntegration.onAppointmentUpdated(appointment, {});
+                                }
+                            }
+                        }
+                        
+                        console.log('[REALTIME] ✅ Calendário atualizado automaticamente');
+                    } catch (error) {
+                        console.error('[REALTIME] ❌ Erro ao processar mudança:', error);
+                    }
+                }
+            )
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('[REALTIME] ✅ Inscrito em mudanças de appointments');
+                } else if (status === 'CHANNEL_ERROR') {
+                    console.error('[REALTIME] ❌ Erro no canal');
+                } else if (status === 'TIMED_OUT') {
+                    console.error('[REALTIME] ⏱️ Timeout na inscrição');
+                }
+            });
+        
+        // Canal para mudanças em clients (aniversários)
+        const clientsChannel = window.supabase
+            .channel('clients_changes')
+            .on('postgres_changes',
+                { event: '*', schema: 'public', table: 'clients' },
+                async (payload) => {
+                    console.log('[REALTIME] 👤 Mudança em clients:', payload.eventType);
+                    
+                    // Recarregar clients
+                    appState.clients = await db.getClients();
+                    
+                    // Se for cliente novo, verificar aniversário
+                    if (payload.eventType === 'INSERT' && payload.new && window.NotificationIntegration) {
+                        window.NotificationIntegration.checkBirthdays();
+                    }
+                }
+            )
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('[REALTIME] ✅ Inscrito em mudanças de clients');
+                }
+            });
+        
+        // Canal para mudanças em schedule_requests (solicitações de fechamento)
+        const scheduleRequestsChannel = window.supabase
+            .channel('schedule_requests_changes')
+            .on('postgres_changes',
+                { event: '*', schema: 'public', table: 'schedule_requests' },
+                async (payload) => {
+                    console.log('[REALTIME] 📋 Mudança em schedule_requests:', payload.eventType);
+                    
+                    // Recarregar schedule requests
+                    try {
+                        appState.scheduleRequests = await db.getScheduleRequests();
+                        
+                        // Se for aprovação/rejeição, notificar
+                        if (payload.eventType === 'UPDATE' && payload.new && payload.old) {
+                            const wasApproved = !payload.old.approved && payload.new.approved;
+                            const wasRejected = !payload.old.approved && payload.new.status === 'rejected';
+                            
+                            if (wasApproved || wasRejected) {
+                                if (window.NotificationIntegration) {
+                                    window.NotificationIntegration.onScheduleRequestApproved(
+                                        payload.new, 
+                                        wasApproved
+                                    );
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.warn('[REALTIME] Tabela schedule_requests não existe');
+                    }
+                }
+            )
+            .subscribe((status) => {
+                if (status === 'SUBSCRIBED') {
+                    console.log('[REALTIME] ✅ Inscrito em mudanças de schedule_requests');
+                }
+            });
+        
+        console.log('[REALTIME] 🚀 Sistema de tempo real ativado!');
+        
+        // Retornar função de cleanup para desinscrever se necessário
+        return () => {
+            appointmentsChannel.unsubscribe();
+            clientsChannel.unsubscribe();
+            scheduleRequestsChannel.unsubscribe();
+            console.log('[REALTIME] 🔌 Desconectado do tempo real');
+        };
+    }
+
     function updateHeaderStaffInfo() {
         const t = getTranslations();
         const currentStaff = appState.staff.find(s => 
@@ -2984,22 +3180,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     function setupUIPermissions() {
         const role = getUserRole();
         
-        console.log('🔧 setupUIPermissions chamado');
-        console.log('Role detectado:', role);
-        console.log('isAdmin():', isAdmin());
+        // console.log('🔧 setupUIPermissions chamado');
+        // console.log('Role detectado:', role);
+        // console.log('isAdmin():', isAdmin());
         
         // ========== MENU SOLICITAÇÕES - APENAS ADMIN ==========
         const scheduleRequestsNavItem = document.getElementById('scheduleRequestsNavItem');
-        console.log('📋 scheduleRequestsNavItem encontrado:', !!scheduleRequestsNavItem);
+        // console.log('📋 scheduleRequestsNavItem encontrado:', !!scheduleRequestsNavItem);
         
         if (scheduleRequestsNavItem) {
             if (isAdmin()) {
-                console.log('✅ Admin detectado - mostrando menu Solicitações');
+                // console.log('✅ Admin detectado - mostrando menu Solicitações');
                 scheduleRequestsNavItem.style.display = 'block';
                 scheduleRequestsNavItem.style.visibility = 'visible';
                 scheduleRequestsNavItem.classList.remove('hidden');
             } else {
-                console.log('❌ Não é admin - ocultando menu Solicitações');
+                // console.log('❌ Não é admin - ocultando menu Solicitações');
                 scheduleRequestsNavItem.style.display = 'none';
                 scheduleRequestsNavItem.style.visibility = 'hidden';
                 scheduleRequestsNavItem.classList.add('hidden');
@@ -3267,7 +3463,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <h4 class="font-medium text-[var(--text-primary)] mb-2">🎉 ${t.todayBirthdays || 'Hoje'}:</h4>
                         <div class="space-y-2">
                             ${todayBirthdays.map(client => `
-                                <div class="flex items-center justify-between p-3 bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 rounded-lg border-l-4 border-yellow-400">
+                                <div class="birthday-card">
                                     <div class="flex items-center">
                                         <span class="text-2xl mr-3">🎂</span>
                                         <div>
@@ -3393,6 +3589,30 @@ document.addEventListener('DOMContentLoaded', async () => {
         `).join('');
     }
 
+    // 👥 ORDENAÇÃO DE FUNCIONÁRIOS POR HIERARQUIA
+    function sortStaffByHierarchy(staffArray) {
+        // Definir ordem hierárquica
+        const roleOrder = {
+            'admin': 1,
+            'hairdresser': 2,
+            'manicurist': 3,
+            'receptionist': 4
+        };
+
+        return staffArray.slice().sort((a, b) => {
+            // Primeiro, ordenar por cargo (hierarquia)
+            const roleA = roleOrder[a.role] || 999;
+            const roleB = roleOrder[b.role] || 999;
+            
+            if (roleA !== roleB) {
+                return roleA - roleB;
+            }
+            
+            // Dentro do mesmo cargo, ordenar alfabeticamente por nome
+            return a.name.localeCompare(b.name, 'pt-BR');
+        });
+    }
+
     function renderStaff() {
         const t = getTranslations();
         
@@ -3403,7 +3623,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         const canEdit = canEditStaff();
         
-        dom.staffList.innerHTML = appState.staff.map(staff => `
+        // 👥 APLICAR ORDENAÇÃO POR HIERARQUIA
+        const sortedStaff = sortStaffByHierarchy(appState.staff);
+        
+        dom.staffList.innerHTML = sortedStaff.map(staff => `
             <li class="p-4 hover:bg-[var(--accent-light)] border-b border-[var(--border-color)] bg-[var(--bg-secondary)]">
                 <div class="flex flex-col space-y-4">
                     <!-- Cabeçalho com foto e informações básicas -->
@@ -3420,7 +3643,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <div>
                                 <div class="font-medium text-[var(--text-primary)] text-lg">${staff.name}</div>
                                 <div class="flex items-center space-x-2">
-                                    <span class="text-sm px-2 py-1 rounded-full ${staff.role === 'admin' ? 'bg-purple-100 text-purple-800' : staff.role === 'receptionist' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'}">${t[staff.role] || staff.role}</span>
+                                    <span class="text-sm px-2 py-1 rounded-full staff-role-${staff.role}">${t[staff.role] || staff.role}</span>
                                 </div>
                             </div>
                         </div>
@@ -4992,33 +5215,23 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
             `;
         } else {
-            // Gerar horários baseados na duração dos agendamentos
-            // Usar os horários customizados se existirem
+            // 🎯 SEMPRE USAR SLOTS DE 30 MINUTOS (independente do funcionário)
+            // Isso garante alinhamento perfeito das linhas com os horários
             const timeSlots = generateTimeSlots(
                 workingStart,
                 workingEnd,
-                appointmentDuration,
+                30, // ✅ FIXO: 30 minutos (não usar appointmentDuration)
                 lunchStart,
                 lunchEnd
             );
 
             // Organizar agendamentos por horário - corrigir formato de hora
             const appointmentsByTime = {};
-            const occupiedSlots = new Set(); // 🆕 Rastrear slots ocupados por agendamentos multi-slot
             
             dayAppointments.forEach(appointment => {
                 // Converter "10:00:00" para "10:00" para compatibilidade
                 const timeKey = appointment.time.substring(0, 5);
                 appointmentsByTime[timeKey] = appointment;
-                
-                // 🆕 Marcar todos os slots ocupados por este agendamento
-                const duration = appointment.duration || 30;
-                const slotsCount = Math.ceil(duration / 30);
-                
-                for (let i = 0; i < slotsCount; i++) {
-                    const slotTime = addMinutesToTime(timeKey, i * 30);
-                    occupiedSlots.add(slotTime);
-                }
             });
 
             // IMPORTANTE: Adicionar slots para agendamentos que existem FORA do horário customizado
@@ -5044,104 +5257,154 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return (aHour * 60 + aMin) - (bHour * 60 + bMin);
             });
 
-            // Renderizar cada slot de horário
-            timeSlots.forEach(timeSlot => {
-                const appointment = appointmentsByTime[timeSlot.time];
-                const isLunchTime = timeSlot.isLunchTime;
-                
-                // 🆕 PULAR slots ocupados por agendamentos multi-slot (exceto o primeiro)
-                if (!appointment && occupiedSlots.has(timeSlot.time)) {
-                    return; // Não renderizar - este slot faz parte de um agendamento maior
-                }
-                
+            // 🎯 GRID ESTILO CALENDÁRIO: Horários (esquerda) | Área de eventos (direita com linhas)
+            html += `
+                <div class="flex border border-[var(--border-color)] rounded-lg overflow-hidden">
+                    <!-- COLUNA DE HORÁRIOS (FIXA - 80px) -->
+                    <div class="w-20 text-xs text-center text-[var(--text-secondary)] border-r border-[var(--border-color)] bg-[var(--bg-secondary)]">
+            `;
+            
+            // Renderizar TODOS os horários na coluna da esquerda
+            timeSlots.forEach((timeSlot, index) => {
+                const isLast = index === timeSlots.length - 1;
                 html += `
-                    <div class="flex items-start py-3 border-b border-[var(--border-color)] last:border-b-0">
-                        <div class="w-20 text-sm text-[var(--text-secondary)] font-mono pt-1">
-                            ${timeSlot.time}
-                        </div>
-                        <div class="flex-1 ml-4">
+                    <div class="h-16 flex items-center justify-center font-mono ${!isLast ? 'border-b border-[var(--border-color)]' : ''}">${timeSlot.time}</div>
                 `;
+            });
+            
+            html += `
+                    </div>
+                    
+                    <!-- ÁREA DE CONTEÚDO (RELATIVA COM LINHAS HORIZONTAIS ALINHADAS) -->
+                    <div class="flex-1 relative" style="min-height: ${timeSlots.length * 64}px;">
+                        <!-- LINHAS DE FUNDO (absolute, atrás dos eventos, ALINHADAS COM HORÁRIOS) -->
+                        <div class="absolute top-0 left-0 w-full h-full pointer-events-none">
+            `;
+            
+            // Renderizar linhas horizontais de fundo (ALINHADAS COM HORÁRIOS)
+            timeSlots.forEach((timeSlot, index) => {
+                const isLast = index === timeSlots.length - 1;
+                html += `
+                    <div class="h-16 ${!isLast ? 'border-b border-[var(--border-color)]' : ''}"></div>
+                `;
+            });
+            
+            html += `
+                        </div>
+                        
+                        <!-- EVENTOS (absolute, sobre as linhas, COM PADDING) -->
+                        <div class="absolute top-0 left-0 w-full h-full p-3">
+            `;
+            
+            // Renderizar appointments como eventos absolute
+            dayAppointments.forEach(appointment => {
+                const client = appointment.clients || appState.clients.find(c => c.id === appointment.client_id);
+                const service = appointment.services || appState.services.find(s => s.id === appointment.service_id);
+                const staff = appointment.staff || appState.staff.find(s => s.id === appointment.staff_id);
                 
-                if (isLunchTime) {
-                    html += `
-                        <div class="text-sm text-orange-600 dark:text-orange-400 italic py-2">
-                            Horário de almoço
-                        </div>
-                    `;
-                } else if (!appointment) {
-                    // Verificar se a data é no passado (anterior a hoje)
-                    const isPast = isDateInPast(dateStr);
-                    // Verificar se tem permissão para criar agendamentos
-                    const canCreate = canCreateAppointments();
-                    // Admin pode criar em qualquer data
-                    const isAdmin = getUserRole() === 'admin';
-                    const canCreateHere = canCreate && (!isPast || isAdmin);
-                    
-                    html += `
-                        <div class="py-2 cursor-pointer text-[var(--text-secondary)] ${!canCreateHere ? 'opacity-50 cursor-not-allowed' : 'hover:text-[var(--accent-primary)] hover:bg-[var(--accent-light)]'} transition-colors min-h-[2rem] rounded px-2" 
-                             ${canCreateHere ? `onclick="showAppointmentModal(null, '${dateStr}', '${timeSlot.time}')"` : ''}
-                             ${!canCreate ? 'title="Apenas administradores e recepcionistas podem criar agendamentos"' : (isPast && !isAdmin ? 'title="Não é possível agendar em datas passadas (apenas admin)"' : '')}>
-                             ${isPast && !isAdmin ? '<span class="text-xs italic">Horário passado</span>' : (!canCreate ? '<span class="text-xs italic">Apenas visualização</span>' : '')}
-                        </div>
-                    `;
-                } else {
-                    // Acessar dados com JOIN - podem vir como objetos ou por ID
-                    const client = appointment.clients || appState.clients.find(c => c.id === appointment.client_id);
-                    const service = appointment.services || appState.services.find(s => s.id === appointment.service_id);
-                    const staff = appointment.staff || appState.staff.find(s => s.id === appointment.staff_id);
-                    
-                    // 🆕 Usar a duração do agendamento (não do serviço)
-                    const duration = appointment.duration || 30;
-                    const endTime = addMinutesToTime(appointment.time, duration);
-                    const canEdit = canEditAppointment(appointment);
-                    
-                    // 🆕 Calcular altura visual baseada na duração (cada 30min = ~60px)
-                    const slotsCount = Math.ceil(duration / 30);
-                    const blockHeight = (slotsCount * 60) - 12; // -12 para compensar padding
-
-                    html += `
-                        <div class="py-2 ${canEdit ? 'cursor-pointer hover:bg-[var(--accent-light)]' : 'cursor-not-allowed opacity-75'} rounded-md p-3 -m-2 transition-colors ${timeSlot.isOutsideSchedule ? 'bg-amber-50 dark:bg-amber-900/10 border-l-4 border-amber-500' : 'border-l-4 border-[var(--accent-primary)]'}" 
-                             style="min-height: ${blockHeight}px;"
-                             ${canEdit ? `onclick="editAppointment('${appointment.id}')"` : 'title="Agendamentos passados não podem ser editados"'}>
-                            <div class="flex items-start justify-between h-full">
-                                <div class="flex-1">
-                                    <div class="flex items-center space-x-2 mb-2">
-                                        <span class="text-base font-semibold text-[var(--text-primary)]">
-                                            ${formatTime(appointment.time)} - ${formatTime(endTime)}
-                                        </span>
-                                        <span class="text-xs px-2 py-1 rounded-full ${getStatusColor(appointment.status)}">
-                                            ${getStatusText(appointment.status)}
-                                        </span>
-                                        ${!canEdit ? '<span class="text-xs px-2 py-1 bg-gray-200 text-gray-600 rounded-full">🔒 Bloqueado</span>' : ''}
-                                        ${timeSlot.isOutsideSchedule ? '<span class="text-xs px-2 py-1 bg-amber-100 text-amber-700 rounded-full" title="Agendamento fora do horário customizado">⚠️ Fora do horário</span>' : ''}
-                                    </div>
-                                    <div class="text-sm font-medium text-[var(--text-primary)] mb-1">
-                                        👤 ${client?.name || 'Cliente'}
-                                    </div>
-                                    <div class="text-sm text-[var(--text-secondary)]">
-                                        ${service?.name || '⏳ Aguardando serviços'}
-                                    </div>
-                                    ${appointment.notes ? `<div class="text-xs text-[var(--text-secondary)] mt-2 italic bg-[var(--bg-secondary)] p-2 rounded">${appointment.notes}</div>` : ''}
-                                    <div class="text-xs text-[var(--text-secondary)] mt-2 font-mono">
-                                        ⏱️ Duração: ${duration} minutos (${slotsCount} slot${slotsCount > 1 ? 's' : ''} de 30min)
-                                    </div>
-                                </div>
-                                <div class="text-right ml-4 flex flex-col items-end space-y-2">
-                                    <button onclick="event.stopPropagation(); showAppointmentServicesModal('${appointment.id}')"
-                                        class="text-xs px-3 py-2 bg-[var(--accent-primary)] text-white rounded-lg hover:bg-[var(--accent-secondary)] transition-colors shadow-sm font-medium">
-                                        ${service?.name ? '💰 Ver Serviços' : '➕ Add Serviços'}
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                }
+                // Calcular duração e posição
+                const [startHour, startMin] = appointment.time.substring(0, 5).split(':').map(Number);
+                const [endHour, endMin] = (appointment.time_end || addMinutesToTime(appointment.time, 30)).substring(0, 5).split(':').map(Number);
+                const duration = (endHour * 60 + endMin) - (startHour * 60 + startMin);
+                const endTime = addMinutesToTime(appointment.time, duration);
+                const canEdit = canEditAppointment(appointment);
+                
+                // Calcular posição TOP baseada no primeiro slot
+                const firstSlotTime = timeSlots[0].time;
+                const [firstHour, firstMin] = firstSlotTime.split(':').map(Number);
+                const firstSlotMinutes = firstHour * 60 + firstMin;
+                const appointmentStartMinutes = startHour * 60 + startMin;
+                const minutesFromStart = appointmentStartMinutes - firstSlotMinutes;
+                
+                // 30 minutos = 64px (cada slot de 30min = h-16 = 64px)
+                const topPosition = (minutesFromStart / 30) * 64;
+                // ✅ ALTURA MÍNIMA: 64px (mesmo que seja appointment de 15min)
+                const calculatedHeight = (duration / 30) * 64;
+                const eventHeight = Math.max(64, calculatedHeight); // Nunca menor que 64px
+                
+                // Verificar se está fora do horário
+                const isOutsideSchedule = !timeSlots.some(slot => slot.time === appointment.time.substring(0, 5));
                 
                 html += `
+                    <div class="absolute ${canEdit ? 'cursor-pointer hover:opacity-90' : 'cursor-not-allowed opacity-75'} rounded-lg p-2.5 transition-all shadow-lg ${isOutsideSchedule ? 'bg-amber-100 dark:bg-amber-800/40 border-l-4 border-amber-500' : 'bg-[var(--bg-primary)] border-l-4 border-[var(--accent-primary)]'} border border-[var(--border-color)]" 
+                         style="top: ${topPosition}px; height: ${eventHeight}px; left: 0; right: 0; overflow: hidden;"
+                         ${canEdit ? `onclick="editAppointment('${appointment.id}')"` : 'title="Agendamentos passados não podem ser editados"'}>
+                        <div class="flex items-start justify-between h-full">
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-bold text-[var(--text-primary)] text-sm mb-1 truncate">
+                                    👤 ${client?.name || 'Cliente'}
+                                </h3>
+                                <p class="text-sm text-[var(--text-secondary)] mb-1 truncate">
+                                    ${service?.name || '⏳ Aguardando serviços'}
+                                </p>
+                                <div class="flex items-center flex-wrap gap-1.5">
+                                    <span class="text-xs px-2 py-0.5 bg-[var(--accent-primary)] text-white rounded-full font-mono whitespace-nowrap">
+                                        ${formatTime(appointment.time)} - ${formatTime(endTime)}
+                                    </span>
+                                    <span class="text-xs px-2 py-1 rounded-full ${getStatusColor(appointment.status)}">
+                                        ${getStatusText(appointment.status)}
+                                    </span>
+                                    ${appointment.has_fitting ? `<span class="text-xs px-2 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full whitespace-nowrap">🔄 ${appointment.fitting_staff_name}</span>` : ''}
+                                    ${!canEdit ? '<span class="text-xs px-2 py-1 bg-gray-200 text-gray-600 rounded-full">🔒</span>' : ''}
+                                    ${isOutsideSchedule ? '<span class="text-xs px-2 py-1 bg-amber-100 text-amber-700 rounded-full" title="Fora do horário">⚠️</span>' : ''}
+                                </div>
+                                ${appointment.notes && eventHeight > 120 ? `<p class="text-xs text-blue-600 dark:text-blue-400 mt-2 italic line-clamp-2">${appointment.notes}</p>` : ''}
+                            </div>
+                            <div class="ml-3 flex flex-col items-end space-y-2 shrink-0">
+                                <button onclick="event.stopPropagation(); showFittingModal('${appointment.id}')"
+                                    class="text-xs px-2 py-1 bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors shadow-sm font-medium whitespace-nowrap">
+                                    🔄 Encaixe
+                                </button>
+                            </div>
                         </div>
                     </div>
                 `;
             });
+            
+            // ADICIONAR ÁREAS CLICÁVEIS PARA CRIAR AGENDAMENTOS (ALINHADAS COM SLOTS)
+            const isPast = isDateInPast(dateStr);
+            const canCreate = canCreateAppointments();
+            const isAdmin = getUserRole() === 'admin';
+            const canCreateHere = canCreate && (!isPast || isAdmin);
+            
+            if (canCreateHere) {
+                timeSlots.forEach((timeSlot, index) => {
+                    if (timeSlot.isLunchTime) return; // Não permitir criar em horário de almoço
+                    
+                    // Verificar se há appointment que OCUPA este slot (não apenas começa nele)
+                    const slotHasAppointment = dayAppointments.some(apt => {
+                        const [aptStartH, aptStartM] = apt.time.substring(0, 5).split(':').map(Number);
+                        const [aptEndH, aptEndM] = (apt.time_end || addMinutesToTime(apt.time, 30)).substring(0, 5).split(':').map(Number);
+                        const [slotH, slotM] = timeSlot.time.split(':').map(Number);
+                        
+                        const aptStartMin = aptStartH * 60 + aptStartM;
+                        const aptEndMin = aptEndH * 60 + aptEndM;
+                        const slotMin = slotH * 60 + slotM;
+                        
+                        // Verificar se o slot está DENTRO do appointment
+                        return slotMin >= aptStartMin && slotMin < aptEndMin;
+                    });
+                    
+                    if (slotHasAppointment) return; // Não criar área clicável se slot está ocupado
+                    
+                    // Calcular posição TOP baseada em slots de 30min
+                    const topPosition = index * 64; // Cada slot = 64px
+                    
+                    html += `
+                        <div class="absolute hover:bg-[var(--accent-light)] hover:bg-opacity-30 transition-colors rounded cursor-pointer z-0"
+                             style="top: ${topPosition}px; height: 64px; left: 0; right: 0;"
+                             onclick="showAppointmentModal(null, '${dateStr}', '${timeSlot.time}')"
+                             title="Clique para criar agendamento às ${timeSlot.time}">
+                        </div>
+                    `;
+                });
+            }
+            
+            html += `
+                        </div>
+                    </div>
+                </div>
+            `;
             
             // Resumo do dia (mais simples)
             if (dayAppointments.length > 0) {
@@ -5241,11 +5504,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // Debug: Verificar role atual
-        console.log('🔍 renderScheduleRequests - Verificando permissões');
-        console.log('isAdmin():', isAdmin());
-        console.log('isManicurist():', isManicurist());
-        console.log('isHairdresser():', isHairdresser());
-        console.log('getUserRole():', getUserRole());
+        // console.log('🔍 renderScheduleRequests - Verificando permissões');
+        // console.log('isAdmin():', isAdmin());
+        // console.log('isManicurist():', isManicurist());
+        // console.log('isHairdresser():', isHairdresser());
+        // console.log('getUserRole():', getUserRole());
 
         // Verificar permissões - ADMIN TEM PRIORIDADE
         if (isAdmin()) {
@@ -6595,6 +6858,127 @@ document.addEventListener('DOMContentLoaded', async () => {
         return publicUrl;
     }
 
+    // 🎯 VALIDAÇÃO DE SLOTS POR CARGO
+    function validateServiceDuration(staffId, durationMinutes) {
+        const staff = appState.staff.find(s => s.id === staffId);
+        if (!staff) {
+            return {
+                valid: false,
+                message: 'Funcionário não encontrado',
+                slotSize: 0,
+                slotsNeeded: 0
+            };
+        }
+
+        // Definir tamanho do slot baseado no cargo
+        let slotSize = 30; // Padrão
+        let slotLabel = '30 minutos';
+        
+        if (staff.role === 'hairdresser') {
+            slotSize = 30;
+            slotLabel = '30 minutos (Cabeleireira)';
+        } else if (staff.role === 'manicurist') {
+            slotSize = 45;
+            slotLabel = '45 minutos (Manicure)';
+        }
+
+        // Verificar se a duração é múltiplo do slot
+        const isMultiple = durationMinutes % slotSize === 0;
+        const slotsNeeded = Math.ceil(durationMinutes / slotSize);
+        const suggestedDuration = slotsNeeded * slotSize;
+
+        return {
+            valid: isMultiple,
+            slotSize,
+            slotLabel,
+            slotsNeeded,
+            durationMinutes,
+            suggestedDuration,
+            staffRole: staff.role,
+            staffName: staff.name,
+            message: isMultiple 
+                ? `✅ Duração válida: ${slotsNeeded} slot(s) de ${slotLabel}`
+                : `⚠️ Duração inválida! ${staff.name} trabalha com slots de ${slotLabel}. Ajuste para ${suggestedDuration} minutos (${slotsNeeded} slots).`
+        };
+    }
+
+    // 🎯 EXIBIR INFORMAÇÕES DE SLOTS NO MODAL
+    function updateSlotInfo() {
+        const staffSelect = document.getElementById('staff-select');
+        const timeStartSelect = document.getElementById('time-start-select');
+        const timeEndSelect = document.getElementById('time-end-select');
+        const slotInfoDiv = document.getElementById('slot-info');
+
+        if (!staffSelect || !timeStartSelect || !timeEndSelect || !slotInfoDiv) return;
+
+        const staffId = staffSelect.value;
+        const timeStart = timeStartSelect.value;
+        const timeEnd = timeEndSelect.value;
+
+        if (!staffId || !timeStart || !timeEnd) {
+            slotInfoDiv.innerHTML = '';
+            return;
+        }
+
+        // Calcular duração
+        const [startHour, startMin] = timeStart.split(':').map(Number);
+        const [endHour, endMin] = timeEnd.split(':').map(Number);
+        const startMinutes = startHour * 60 + startMin;
+        const endMinutes = endHour * 60 + endMin;
+        const duration = endMinutes - startMinutes;
+
+        if (duration <= 0) {
+            slotInfoDiv.innerHTML = `
+                <div class="mt-2 p-3 bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 rounded">
+                    <p class="text-sm text-red-700 dark:text-red-300">
+                        ❌ Horário de fim deve ser após o horário de início!
+                    </p>
+                </div>
+            `;
+            return;
+        }
+
+        // Validar slots
+        const validation = validateServiceDuration(staffId, duration);
+
+        if (validation.valid) {
+            slotInfoDiv.innerHTML = `
+                <div class="mt-2 p-3 bg-green-50 dark:bg-green-900/20 border-l-4 border-green-500 rounded">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-green-800 dark:text-green-200">
+                                ${validation.message}
+                            </p>
+                            <p class="text-xs text-green-600 dark:text-green-300 mt-1">
+                                ⏱️ Duração total: ${duration} minutos
+                            </p>
+                        </div>
+                        <span class="text-2xl">✅</span>
+                    </div>
+                </div>
+            `;
+        } else {
+            slotInfoDiv.innerHTML = `
+                <div class="mt-2 p-3 bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500 rounded">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-yellow-800 dark:text-yellow-200">
+                                ${validation.message}
+                            </p>
+                            <p class="text-xs text-yellow-600 dark:text-yellow-300 mt-1">
+                                💡 Duração atual: ${duration} min | Sugerida: ${validation.suggestedDuration} min
+                            </p>
+                        </div>
+                        <span class="text-2xl">⚠️</span>
+                    </div>
+                </div>
+            `;
+        }
+    }
+
+    // Tornar global para uso nos event listeners
+    window.updateSlotInfo = updateSlotInfo;
+
     function showAppointmentModal(appointment = null, dateStr = null, timeStr = null) {
         const t = getTranslations();
         const isEdit = !!appointment;
@@ -6726,7 +7110,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         );
         
         showModal(`
-            <div class="bg-[var(--bg-primary)] rounded-lg max-w-md w-full mx-4 border border-[var(--border-color)]">
+            <div class="bg-[var(--bg-primary)] rounded-lg max-w-md w-full mx-4 border border-[var(--border-color)] max-h-[90vh] overflow-y-auto">
                 <div class="p-6">
                     <h3 class="text-lg font-medium mb-4 text-[var(--text-primary)]">${isEdit ? 'Editar Agendamento' : t.newAppointment}</h3>
                     <form id="appointmentForm" class="space-y-4">
@@ -6740,8 +7124,9 @@ document.addEventListener('DOMContentLoaded', async () => {
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-[var(--text-secondary)]">${t.selectStaff}</label>
-                            <select id="staff-select" name="staff_id" required class="mt-1 block w-full border-[var(--border-color)] rounded-md shadow-sm px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]">
+                            <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">${t.selectStaff}</label>
+                            <select id="staff-select" name="staff_id" required
+                                class="mt-1 block w-full border-[var(--border-color)] rounded-md shadow-sm px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]">
                                 <option value="" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]">${t.selectStaff}</option>
                                 ${getVisibleStaffForBooking().map(staff => 
                                     `<option value="${staff.id}" data-role="${staff.role}" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.staff_id === staff.id ? 'selected' : ''}>${staff.name} (${staff.role === 'manicurist' ? '💅 Manicure' : '💇 Cabeleireira'})</option>`
@@ -6759,22 +7144,60 @@ document.addEventListener('DOMContentLoaded', async () => {
                                 </p>
                             ` : ''}
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium text-[var(--text-secondary)]">${t.time}</label>
-                            <select name="time" required class="mt-1 block w-full border-[var(--border-color)] rounded-md shadow-sm px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]">
-                                <option value="" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]">Selecione um horário</option>
-                                ${validTimeSlots.filter(slot => !slot.isLunchTime).map(slot => 
-                                    `<option value="${slot.time}" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.time === slot.time || defaultTime === slot.time ? 'selected' : ''}>${formatTime(slot.time)}</option>`
-                                ).join('')}
-                            </select>
+                        
+                        <!-- HORÁRIOS DE INÍCIO E FIM (LADO A LADO) -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <!-- HORÁRIO DE INÍCIO -->
+                            <div>
+                                <label class="block text-sm font-medium text-[var(--text-secondary)]">🕐 Horário de Início</label>
+                                <select name="time_start" id="time-start-select" required class="mt-1 block w-full border-[var(--border-color)] rounded-md shadow-sm px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]">
+                                    <option value="" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]">Selecione o início</option>
+                                    ${validTimeSlots.filter(slot => !slot.isLunchTime).map(slot => 
+                                        `<option value="${slot.time}" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${appointment?.time === slot.time || defaultTime === slot.time ? 'selected' : ''}>${formatTime(slot.time)}</option>`
+                                    ).join('')}
+                                </select>
+                            </div>
+                            
+                            <!-- HORÁRIO DE FIM -->
+                            <div>
+                                <label class="block text-sm font-medium text-[var(--text-secondary)]">🕐 Horário de Término</label>
+                                <select name="time_end" id="time-end-select" required class="mt-1 block w-full border-[var(--border-color)] rounded-md shadow-sm px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]">
+                                    <option value="" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]">Selecione o início primeiro</option>
+                                </select>
+                                <p class="text-xs text-[var(--text-secondary)] mt-1 italic">
+                                    💡 Selecione o início primeiro
+                                </p>
+                            </div>
                         </div>
+
+                            <!-- SELEÇÃO DE MÚLTIPLOS SERVIÇOS (FlyonUI Multi-Select) -->
                         <div>
-                            <label class="block text-sm font-medium text-[var(--text-secondary)]">⏱️ Duração (minutos)</label>
-                            <select id="duration-select" name="duration" required class="mt-1 block w-full border-[var(--border-color)] rounded-md shadow-sm px-3 py-2 bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]">
-                                <option value="">Selecione o funcionário primeiro</option>
+                            <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">💅 Serviços</label>
+                            <select id="services-select" name="services[]" multiple required
+                                data-select='{
+                                    "placeholder": "Selecione os serviços...",
+                                    "toggleTag": "<button type=\\"button\\" aria-expanded=\\"false\\"></button>",
+                                    "toggleClasses": "advance-select-toggle select-disabled:pointer-events-none select-disabled:opacity-40",
+                                    "toggleCountText": "{count} selecionado(s)",
+                                    "toggleCountTextMinItems": 1,
+                                    "dropdownClasses": "advance-select-menu",
+                                    "optionClasses": "advance-select-option selected:select-active",
+                                    "optionTemplate": "<div class=\\"flex justify-between items-center w-full\\"><div class=\\"flex-1\\"><div class=\\"font-medium text-[var(--text-primary)]\\" data-title></div><div class=\\"text-xs text-[var(--text-secondary)] mt-1\\" data-description></div></div><span class=\\"icon-[tabler--check] shrink-0 size-4 text-[var(--accent-primary)] hidden selected:block\\"></span></div>",
+                                    "extraMarkup": "<span class=\\"icon-[tabler--caret-up-down] shrink-0 size-4 text-[var(--text-primary)] absolute top-1/2 end-3 -translate-y-1/2\\"></span>"
+                                }'
+                                class="hidden">
+                                <option value="">Escolha os serviços</option>
+                                ${appState.services.map(service => {
+                                    const description = `R$ ${parseFloat(service.price).toFixed(2)} • ⏱️ ${service.duration_minutes || 0}min`;
+                                    return `<option value="${service.id}" 
+                                        data-select-option='{"description": "${description}"}'
+                                        ${appointment?.service_id === service.id ? 'selected' : ''}>
+                                        ${service.name}
+                                    </option>`;
+                                }).join('')}
                             </select>
-                            <p class="text-xs text-[var(--text-secondary)] mt-1 italic">
-                                💡 A duração varia conforme o tipo de profissional selecionado
+                            <p class="text-xs text-[var(--text-secondary)] mt-2 italic">
+                                💡 Selecione múltiplos serviços clicando nas opções
                             </p>
                         </div>
                         <div>
@@ -6816,63 +7239,72 @@ document.addEventListener('DOMContentLoaded', async () => {
             </div>
         `);
 
-        // ✨ FUNÇÃO PARA ATUALIZAR DURAÇÃO BASEADA NO CARGO DO FUNCIONÁRIO
-        function updateDurationOptions() {
+        // ✨ FUNÇÃO PARA ATUALIZAR HORÁRIOS DE TÉRMINO BASEADO NO INÍCIO
+        function updateEndTimeOptions() {
+            const startSelect = document.getElementById('time-start-select');
+            const endSelect = document.getElementById('time-end-select');
             const staffSelect = document.getElementById('staff-select');
-            const durationSelect = document.getElementById('duration-select');
             
-            if (!staffSelect || !durationSelect) return;
+            if (!startSelect || !endSelect) return;
             
-            const selectedOption = staffSelect.options[staffSelect.selectedIndex];
-            const role = selectedOption?.dataset?.role;
+            const startTime = startSelect.value;
             
-            if (!role) {
-                durationSelect.innerHTML = '<option value="">Selecione o funcionário primeiro</option>';
+            if (!startTime) {
+                endSelect.innerHTML = '<option value="">Selecione o início primeiro</option>';
                 return;
             }
             
-            let options = [];
-            let baseSlot = 0;
+            // Pegar o slot de tempo baseado no funcionário
+            const selectedOption = staffSelect?.options[staffSelect.selectedIndex];
+            const role = selectedOption?.dataset?.role;
             
+            let slotDuration = 40; // Padrão: 40 minutos
             if (role === 'manicurist') {
-                // Manicures: 45 minutos por slot
-                options = [
-                    { value: 45, label: '45 minutos (1 slot)' },
-                    { value: 90, label: '90 minutos (2 slots)' },
-                    { value: 135, label: '135 minutos (3 slots)' },
-                    { value: 180, label: '180 minutos (4 slots)' }
-                ];
-                baseSlot = 45;
+                slotDuration = 45;
             } else if (role === 'hairdresser') {
-                // Cabeleireiras: 30 minutos por slot
-                options = [
-                    { value: 30, label: '30 minutos (1 slot)' },
-                    { value: 60, label: '60 minutos (2 slots)' },
-                    { value: 90, label: '90 minutos (3 slots)' },
-                    { value: 120, label: '120 minutos (4 slots)' }
-                ];
-                baseSlot = 30;
-            } else {
-                // Outro cargo: opções padrão
-                options = [
-                    { value: 30, label: '30 minutos' },
-                    { value: 45, label: '45 minutos' },
-                    { value: 60, label: '60 minutos' },
-                    { value: 90, label: '90 minutos' },
-                    { value: 120, label: '120 minutos' }
-                ];
+                slotDuration = 30;
             }
             
-            durationSelect.innerHTML = options.map(opt => 
+            // Converter horário de início para minutos
+            const [startHour, startMin] = startTime.split(':').map(Number);
+            const startMinutes = startHour * 60 + startMin;
+            
+            // Gerar opções de término (mínimo 1 slot, máximo 6 slots)
+            const endOptions = [];
+            for (let slots = 1; slots <= 6; slots++) {
+                const endMinutes = startMinutes + (slotDuration * slots);
+                const endHour = Math.floor(endMinutes / 60);
+                const endMin = endMinutes % 60;
+                
+                // Não passar das 18:00
+                if (endHour >= 18) break;
+                
+                const endTime = `${String(endHour).padStart(2, '0')}:${String(endMin).padStart(2, '0')}`;
+                endOptions.push({
+                    value: endTime,
+                    label: formatTime(endTime) // ✅ SÓ O HORÁRIO, SEM DURAÇÃO/SLOTS
+                });
+            }
+            
+            endSelect.innerHTML = endOptions.map(opt => 
                 `<option value="${opt.value}" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]">${opt.label}</option>`
             ).join('');
+        }
+        
+        // ✨ FUNÇÃO ANTIGA DE DURAÇÃO (REMOVIDA - AGORA USA INÍCIO/FIM)
+        function updateDurationOptions() {
+            // Esta função foi substituída por updateEndTimeOptions()
+            // Mantida aqui para compatibilidade, mas não faz nada
+            return;
         }
 
         // Função para atualizar os horários disponíveis baseado no funcionário e data selecionados
         async function updateAvailableTimeSlots() {
             const staffSelect = document.querySelector('[name="staff_id"]');
             const dateInput = document.querySelector('[name="date"]');
-            const timeSelect = document.querySelector('[name="time"]');
+            const timeSelect = document.getElementById('time-start-select'); // ✅ USAR ID CORRETO
+            
+            if (!timeSelect) return; // ✅ GARANTIR QUE EXISTE
             
             const selectedStaffId = staffSelect.value;
             const selectedDate = dateInput.value;
@@ -6882,7 +7314,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const validTimeSlots = generateTimeSlots(
                     appState.settings.workingHours.start,
                     appState.settings.workingHours.end,
-                    appState.settings.appointmentDuration || 45, // Padrão: 45 minutos
+                    appState.settings.appointmentDuration || 30, // Padrão: 30 minutos (intervalo menor para cobrir ambos os casos)
                     appState.settings.lunchTime?.start || '12:00',
                     appState.settings.lunchTime?.end || '13:00'
                 );
@@ -6976,11 +7408,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Adicionar listeners para atualizar horários quando funcionário ou data mudarem
         const staffSelect = document.querySelector('[name="staff_id"]');
         const dateInput = document.querySelector('[name="date"]');
+        const timeStartSelect = document.getElementById('time-start-select');
+        const timeEndSelect = document.getElementById('time-end-select');
         
         if (staffSelect) {
             staffSelect.addEventListener('change', () => {
                 updateAvailableTimeSlots();
-                updateDurationOptions(); // ✨ Atualiza durações quando muda funcionário
+                updateEndTimeOptions(); // ✨ Atualiza horários de término quando muda funcionário
             });
         }
         
@@ -6988,22 +7422,63 @@ document.addEventListener('DOMContentLoaded', async () => {
             dateInput.addEventListener('change', updateAvailableTimeSlots);
         }
         
-        // Atualizar horários e durações inicialmente se já tiver staff e data selecionados
+        // ✨ NOVO: Listener para atualizar horário de término quando muda início
+        if (timeStartSelect) {
+            timeStartSelect.addEventListener('change', updateEndTimeOptions);
+        }
+        
+        // Atualizar horários inicialmente se já tiver staff e data selecionados
         if (appointment?.staff_id && appointment?.date) {
             updateAvailableTimeSlots();
-            updateDurationOptions(); // ✨ Inicializa durações
+            updateEndTimeOptions(); // ✨ Inicializa horários de término
         }
+
+                // 🎨 INICIALIZAR FLYONUI NO SELECT DE SERVIÇOS
+        setTimeout(() => {
+            if (window.HSSelect) {
+                const servicesSelectEl = document.getElementById('services-select');
+                if (servicesSelectEl) {
+                    window.HSSelect.autoInit();
+                }
+            }
+        }, 100);
 
         document.getElementById('appointmentForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
+            
+            // 🆕 COLETAR MÚLTIPLOS SERVIÇOS (do FlyonUI multi-select)
+            const selectedServices = Array.from(formData.getAll('services[]'));
+            
+            // ✅ VALIDAR SE PELO MENOS 1 SERVIÇO FOI SELECIONADO
+            if (selectedServices.length === 0) {
+                showNotification('⚠️ Selecione pelo menos um serviço!', 'error');
+                return;
+            }
+            
+            // 🆕 CALCULAR DURAÇÃO BASEADA EM INÍCIO/FIM
+            const timeStart = formData.get('time_start');
+            const timeEnd = formData.get('time_end');
+            
+            let duration = 40; // Padrão
+            if (timeStart && timeEnd) {
+                const [startHour, startMin] = timeStart.split(':').map(Number);
+                const [endHour, endMin] = timeEnd.split(':').map(Number);
+                const startMinutes = startHour * 60 + startMin;
+                const endMinutes = endHour * 60 + endMin;
+                duration = endMinutes - startMinutes;
+            }
+            
             const appointmentData = {
                 client_id: formData.get('client_id'),
                 staff_id: formData.get('staff_id'),
-                service_id: formData.get('service_id'), // Adicionar service_id
+                service_id: selectedServices.length > 0 ? selectedServices[0] : null, // Primeiro serviço como principal
+                services: selectedServices, // 🆕 Array de serviços
                 date: formData.get('date'),
-                time: formData.get('time'),
-                duration: parseInt(formData.get('duration')) || 30, // 🆕 DURAÇÃO EM MINUTOS
+                time: timeStart, // 🆕 Usar horário de início
+                time_start: timeStart, // 🆕 Salvar início
+                time_end: timeEnd, // 🆕 Salvar fim
+                // ❌ duration REMOVIDO - calculado automaticamente de time_start até time_end
                 notes: formData.get('notes'),
                 status: formData.get('status') || 'scheduled'
             };
@@ -7012,13 +7487,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 // 🔒 VERIFICAR CONFLITO DE HORÁRIOS (exceto ao editar o próprio agendamento)
                 if (!isEdit || appointment.staff_id !== appointmentData.staff_id || 
                     appointment.date !== appointmentData.date || appointment.time !== appointmentData.time ||
-                    appointment.duration !== appointmentData.duration) {
+                    appointment.time_end !== appointmentData.time_end) {
+                    
+                    // Calcular duração para verificação de conflito
+                    const [startHour, startMin] = timeStart.split(':').map(Number);
+                    const [endHour, endMin] = timeEnd.split(':').map(Number);
+                    const calculatedDuration = (endHour * 60 + endMin) - (startHour * 60 + startMin);
                     
                     const hasConflict = await checkTimeConflict(
                         appointmentData.staff_id,
                         appointmentData.date,
                         appointmentData.time,
-                        appointmentData.duration, // 🆕 PASSAR DURAÇÃO
+                        calculatedDuration, // ✅ DURAÇÃO CALCULADA DE time_start até time_end
                         isEdit ? appointment.id : null
                     );
                     
@@ -7206,20 +7686,18 @@ document.addEventListener('DOMContentLoaded', async () => {
             const notificationTitle = '📅 Novo Agendamento!';
             const notificationBody = `${clientName} - ${dateFormatted} às ${timeFormatted}`;
             
-            // Adicionar ao sino de notificações (SEMPRE, independente das configurações)
-            addNotificationToBell({
-                id: appointment.id,
-                type: 'new_appointment',
-                title: notificationTitle,
-                message: notificationBody,
-                staffId: staff.id,
-                appointmentId: appointment.id,
-                timestamp: new Date().toISOString(),
-                read: false
-            });
+            // 🆕 INTEGRAÇÃO COM O NOVO SISTEMA DE NOTIFICAÇÕES
+            if (window.NotificationIntegration) {
+                const appointmentWithDetails = {
+                    ...appointment,
+                    client_name: clientName,
+                    staff_id: appointmentData.staff_id
+                };
+                window.NotificationIntegration.onAppointmentCreated(appointmentWithDetails);
+            }
             
-            // Se as notificações estiverem habilitadas, mostrar notificação sonora/visual
-            if (window.notificationManager && staff.user_id === appState.currentUser?.id) {
+            // Se as notificações push estiverem habilitadas, mostrar notificação sonora/visual
+            if (window.NotificationManager && staff.user_id === appState.currentUser?.id) {
                 // Tocar som
                 playNotificationSound();
                 
@@ -8174,6 +8652,323 @@ document.addEventListener('DOMContentLoaded', async () => {
         showAppointmentModal(appointment, dateStr, timeStr);
     };
 
+    // � SISTEMA DE ENCAIXE
+    async function showFittingModal(appointmentId) {
+        const appointment = appState.appointments.find(a => a.id === appointmentId);
+        if (!appointment) {
+            showNotification('❌ Agendamento não encontrado', 'error');
+            return;
+        }
+
+        const client = appState.clients.find(c => c.id === appointment.client_id);
+        const originalStaff = appState.staff.find(s => s.id === appointment.staff_id);
+        const service = appState.services.find(s => s.id === appointment.service_id);
+
+        // ✨ Filtrar TODAS as funcionárias disponíveis (não apenas mesmo cargo)
+        const availableStaff = appState.staff.filter(s => s.id !== originalStaff?.id);
+
+        showModal(`
+            <div class="modal-content bg-[var(--bg-primary)] rounded-lg max-w-2xl w-full mx-4 border border-[var(--border-color)]">
+                <div class="p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-semibold text-[var(--text-primary)]">🔄 Criar Encaixe</h3>
+                        <button onclick="hideModal()" class="text-[var(--text-secondary)] hover:text-[var(--text-primary)]">✕</button>
+                    </div>
+
+                    <div class="bg-[var(--bg-secondary)] p-4 rounded-lg mb-4 border border-[var(--border-color)]">
+                        <h4 class="font-medium text-[var(--text-primary)] mb-2">📋 Agendamento Original:</h4>
+                        <div class="space-y-1 text-sm">
+                            <p class="text-[var(--text-secondary)]">👤 Cliente: <span class="text-[var(--text-primary)] font-medium">${client?.name || 'Desconhecido'}</span></p>
+                            <p class="text-[var(--text-secondary)]">👩‍💼 Funcionária Original: <span class="text-[var(--text-primary)] font-medium">${originalStaff?.name || 'Desconhecido'}</span></p>
+                            <p class="text-[var(--text-secondary)]">📅 Data: <span class="text-[var(--text-primary)] font-medium">${appointment.date}</span></p>
+                            <p class="text-[var(--text-secondary)]">⏰ Horário: <span class="text-[var(--text-primary)] font-medium">${appointment.time} - ${appointment.time_end || addMinutesToTime(appointment.time, appointment.duration)}</span></p>
+                            <p class="text-[var(--text-secondary)]">💅 Serviço: <span class="text-[var(--text-primary)] font-medium">${service?.name || 'A definir'}</span></p>
+                        </div>
+                    </div>
+
+                    <form id="fittingForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-[var(--text-primary)] mb-2">
+                                👩‍💼 Transferir para:
+                            </label>
+                            <select name="transferred_to_staff_id" required 
+                                class="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]">
+                                <option value="" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]">Selecione a funcionária</option>
+                                ${availableStaff.map(staff => `
+                                    <option value="${staff.id}" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]">
+                                        ${staff.name} (${staff.role === 'hairdresser' ? '💇 Cabeleireira' : '💅 Manicure'})
+                                    </option>
+                                `).join('')}
+                            </select>
+                            ${availableStaff.length === 0 ? `
+                                <p class="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                                    ⚠️ Não há outras funcionárias disponíveis.
+                                </p>
+                            ` : ''}
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-[var(--text-primary)] mb-2">
+                                📝 Observações (opcional):
+                            </label>
+                            <textarea name="notes" rows="3" 
+                                placeholder="Ex: Cliente preferiu outra funcionária, horário conflitante, etc."
+                                class="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)]"></textarea>
+                        </div>
+
+                        <div class="flex justify-end space-x-3 pt-4 border-t border-[var(--border-color)]">
+                            <button type="button" onclick="hideModal()" 
+                                class="px-4 py-2 text-sm font-medium text-[var(--text-secondary)] bg-[var(--bg-secondary)] rounded-md hover:bg-[var(--accent-light)] border border-[var(--border-color)]">
+                                Cancelar
+                            </button>
+                            <button type="submit" ${availableStaff.length === 0 ? 'disabled' : ''}
+                                class="px-4 py-2 text-sm font-medium text-white bg-amber-500 rounded-md hover:bg-amber-600 disabled:opacity-50 disabled:cursor-not-allowed">
+                                🔄 Criar Encaixe
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `);
+
+        // Event listener para o formulário
+        const form = document.getElementById('fittingForm');
+        if (form) {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                await createFitting(appointmentId, new FormData(form));
+            });
+        }
+    }
+
+    async function createFitting(appointmentId, formData) {
+        const appointment = appState.appointments.find(a => a.id === appointmentId);
+        if (!appointment) {
+            showNotification('❌ Agendamento não encontrado', 'error');
+            return;
+        }
+
+        const transferredToStaffId = formData.get('transferred_to_staff_id');
+        const notes = formData.get('notes');
+
+        if (!transferredToStaffId) {
+            showNotification('⚠️ Selecione uma funcionária', 'error');
+            return;
+        }
+
+        const transferredStaff = appState.staff.find(s => s.id === transferredToStaffId);
+
+        try {
+            // 1. Criar registro de encaixe
+            const { data: fitting, error: fittingError } = await window.supabase
+                .from('appointment_fittings')
+                .insert({
+                    original_appointment_id: appointmentId,
+                    client_id: appointment.client_id,
+                    transferred_to_staff_id: transferredToStaffId,
+                    original_staff_id: appointment.staff_id,
+                    date: appointment.date,
+                    time_start: appointment.time,
+                    time_end: appointment.time_end || addMinutesToTime(appointment.time, appointment.duration),
+                    services: appointment.services || [appointment.service_id],
+                    notes: notes,
+                    created_by: appState.currentUser.id
+                })
+                .select()
+                .single();
+
+            if (fittingError) throw fittingError;
+
+            // 2. Marcar agendamento original como tendo encaixe
+            const { error: updateError } = await window.supabase
+                .from('appointments')
+                .update({
+                    has_fitting: true,
+                    fitting_staff_name: transferredStaff?.name
+                })
+                .eq('id', appointmentId);
+
+            if (updateError) throw updateError;
+
+            // 3. Atualizar appState local
+            const appointmentIndex = appState.appointments.findIndex(a => a.id === appointmentId);
+            if (appointmentIndex !== -1) {
+                appState.appointments[appointmentIndex].has_fitting = true;
+                appState.appointments[appointmentIndex].fitting_staff_name = transferredStaff?.name;
+            }
+
+            showNotification(`✅ Encaixe criado com sucesso! Cliente transferido para ${transferredStaff?.name}`, 'success');
+            hideModal();
+            renderCalendar();
+        } catch (error) {
+            console.error('Erro ao criar encaixe:', error);
+            showNotification('❌ Erro ao criar encaixe: ' + error.message, 'error');
+        }
+    }
+
+    // Tornar funções globais
+    window.showFittingModal = showFittingModal;
+    window.createFitting = createFitting;
+
+    // �💰 RELATÓRIO FINANCEIRO POR FUNCIONÁRIA
+    async function renderFinancialReport(staffFilter = 'all') {
+        const t = getTranslations();
+        const today = new Date();
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - today.getDay());
+        const startDate = startOfWeek.toISOString().split('T')[0];
+        const endDate = today.toISOString().split('T')[0];
+
+        // Filtrar agendamentos
+        let filteredAppointments = appState.appointments.filter(apt => {
+            const aptDate = apt.date;
+            return aptDate >= startDate && aptDate <= endDate && apt.status === 'completed';
+        });
+
+        if (staffFilter !== 'all') {
+            filteredAppointments = filteredAppointments.filter(apt => apt.staff_id === staffFilter);
+        }
+
+        // Calcular estatísticas por funcionária
+        const staffStats = {};
+        
+        appState.staff.forEach(staff => {
+            const staffAppointments = filteredAppointments.filter(apt => apt.staff_id === staff.id);
+            const totalServices = staffAppointments.length;
+            const totalRevenue = staffAppointments.reduce((sum, apt) => {
+                const service = appState.services.find(s => s.id === apt.service_id);
+                return sum + (service?.price || 0);
+            }, 0);
+            
+            // Assumir comissão de 50% (você pode adicionar campo de comissão no staff)
+            const commission = totalRevenue * 0.5;
+            
+            const services = staffAppointments.map(apt => {
+                const service = appState.services.find(s => s.id === apt.service_id);
+                const client = appState.clients.find(c => c.id === apt.client_id);
+                return {
+                    date: apt.date,
+                    time: apt.time,
+                    client: client?.name || 'Desconhecido',
+                    service: service?.name || 'Serviço',
+                    price: service?.price || 0
+                };
+            });
+
+            staffStats[staff.id] = {
+                name: staff.name,
+                role: staff.role,
+                totalServices,
+                totalRevenue,
+                commission,
+                services
+            };
+        });
+
+        // Filtrar apenas staff com serviços (se houver filtro)
+        const visibleStats = Object.entries(staffStats).filter(([id, stats]) => {
+            if (staffFilter === 'all') return stats.totalServices > 0;
+            return id === staffFilter;
+        });
+
+        return `
+            <div class="financial-report">
+                <!-- Filtro de Funcionária -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-[var(--text-primary)] mb-2">
+                        👤 Filtrar por Funcionária:
+                    </label>
+                    <select id="staff-financial-filter" class="w-full px-3 py-2 border border-[var(--border-color)] rounded-lg bg-[var(--bg-secondary)] text-[var(--text-primary)] focus:ring-2 focus:ring-[var(--accent-primary)] focus:border-[var(--accent-primary)]" onchange="filterFinancialReport(this.value)">
+                        <option value="all" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${staffFilter === 'all' ? 'selected' : ''}>Todas as Funcionárias</option>
+                        ${appState.staff.filter(s => s.role === 'hairdresser' || s.role === 'manicurist').map(staff => `
+                            <option value="${staff.id}" class="bg-[var(--bg-secondary)] text-[var(--text-primary)]" ${staffFilter === staff.id ? 'selected' : ''}>
+                                ${staff.name} (${staff.role === 'hairdresser' ? '💇 Cabeleireira' : '💅 Manicure'})
+                            </option>
+                        `).join('')}
+                    </select>
+                </div>
+
+                <!-- Cards de Estatísticas por Funcionária -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    ${visibleStats.map(([id, stats]) => `
+                        <div class="bg-[var(--bg-primary)] rounded-lg p-4 border border-[var(--border-color)]">
+                            <div class="flex items-center justify-between mb-3">
+                                <h3 class="font-semibold text-[var(--text-primary)]">${stats.name}</h3>
+                                <span class="staff-role-${stats.role} px-2 py-1 text-xs rounded-full">
+                                    ${stats.role === 'hairdresser' ? '💇' : '💅'}
+                                </span>
+                            </div>
+                            
+                            <div class="space-y-2 mb-4">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-[var(--text-secondary)]">Total de Serviços:</span>
+                                    <span class="font-medium text-[var(--text-primary)]">${stats.totalServices}</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-[var(--text-secondary)]">Receita Total:</span>
+                                    <span class="font-medium text-green-600 dark:text-green-400">R$ ${stats.totalRevenue.toFixed(2)}</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-[var(--text-secondary)]">Comissão (50%):</span>
+                                    <span class="font-bold text-[var(--accent-primary)]">R$ ${stats.commission.toFixed(2)}</span>
+                                </div>
+                            </div>
+
+                            ${stats.services.length > 0 ? `
+                                <details class="mt-3">
+                                    <summary class="cursor-pointer text-sm text-[var(--accent-primary)] hover:underline">
+                                        Ver detalhes (${stats.services.length} serviços)
+                                    </summary>
+                                    <div class="mt-2 space-y-1 text-xs">
+                                        ${stats.services.slice(0, 5).map(s => `
+                                            <div class="flex justify-between p-2 bg-[var(--bg-secondary)] rounded">
+                                                <div>
+                                                    <div class="text-[var(--text-primary)]">${s.client}</div>
+                                                    <div class="text-[var(--text-secondary)]">${s.service} - ${s.date} ${s.time}</div>
+                                                </div>
+                                                <div class="text-green-600 dark:text-green-400 font-medium">R$ ${s.price.toFixed(2)}</div>
+                                            </div>
+                                        `).join('')}
+                                        ${stats.services.length > 5 ? `
+                                            <div class="text-center text-[var(--text-secondary)] italic">
+                                                + ${stats.services.length - 5} mais...
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                </details>
+                            ` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+
+                ${visibleStats.length === 0 ? `
+                    <div class="text-center py-12">
+                        <p class="text-[var(--text-secondary)]">📊 Nenhum serviço concluído nesta semana ainda.</p>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    }
+
+    // Função global para filtrar relatório financeiro
+    window.filterFinancialReport = async function(staffId) {
+        const reportsView = document.getElementById('reportsView');
+        if (!reportsView) return;
+
+        const content = await renderFinancialReport(staffId);
+        const container = reportsView.querySelector('.financial-report');
+        if (container) {
+            container.outerHTML = content;
+        } else {
+            reportsView.innerHTML = `
+                <div class="space-y-6">
+                    <h2 class="text-2xl font-bold text-[var(--text-primary)]">💰 Financeiro</h2>
+                    ${content}
+                </div>
+            `;
+        }
+    };
+
     async function renderReports() {
         const reportsView = document.getElementById('reportsView');
         if (!reportsView) return;
@@ -8196,16 +8991,37 @@ document.addEventListener('DOMContentLoaded', async () => {
         `;
 
         if (userRole === 'admin') {
-            content = await renderAdvancedAdminReports();
+            // Admin vê tanto analytics quanto financeiro
+            const analytics = await renderAdvancedAdminReports();
+            const financial = await renderFinancialReport('all');
+            content = `
+                <div class="space-y-8">
+                    <!-- 💰 Seção de Analytics -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-4">� Analytics e Estatísticas</h3>
+                        ${analytics}
+                    </div>
+                    
+                    <hr class="border-[var(--border-color)]">
+                    
+                    <!-- 💰 Seção Financeira -->
+                    <div>
+                        <h3 class="text-xl font-semibold text-[var(--text-primary)] mb-4">💰 Resumo Financeiro Semanal</h3>
+                        ${financial}
+                    </div>
+                </div>
+            `;
         } else if (userRole === 'manicurist' || userRole === 'hairdresser') {
-            content = renderManicuristReports();
+            // Staff vê apenas seu próprio financeiro
+            const currentStaff = appState.staff.find(s => s.user_id === appState.currentUser?.id);
+            content = await renderFinancialReport(currentStaff?.id || 'all');
         } else {
             content = `<p class="text-center text-[var(--text-secondary)]">${t.noPermissionViewReports}</p>`;
         }
 
         reportsView.innerHTML = `
             <div class="space-y-6">
-                <h2 class="text-2xl font-bold text-[var(--text-primary)]">${t.reportsTitle}</h2>
+                <h2 class="text-2xl font-bold text-[var(--text-primary)]">💰 Financeiro</h2>
                 ${content}
             </div>
         `;
@@ -8373,24 +9189,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
 
                 <!-- 📊 Status dos Agendamentos -->
-                <div class="status-section bg-[var(--bg-primary)] rounded-lg p-4 mb-6">
+                <div class="status-section bg-[var(--bg-primary)] rounded-lg p-4 mb-6 border border-[var(--border-color)]">
                     <h3 class="text-lg font-semibold text-[var(--text-primary)] mb-4">📋 Status dos Agendamentos</h3>
                     <div class="status-grid grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div class="status-item text-center p-3 rounded-lg bg-[var(--accent-light)] border border-[var(--border-color)]">
                             <div class="text-2xl font-bold text-[var(--accent-primary)]">${analytics.appointment_status?.scheduled || 0}</div>
                             <div class="text-sm text-[var(--accent-primary)]">🕐 Agendados</div>
                         </div>
-                        <div class="status-item text-center p-3 rounded-lg bg-green-50 dark:bg-green-900/20">
-                            <div class="text-2xl font-bold text-green-600">${analytics.appointment_status?.completed || 0}</div>
-                            <div class="text-sm text-green-600">✅ Concluídos</div>
+                        <div class="status-item text-center p-3 rounded-lg bg-[var(--accent-light)] border border-[var(--accent-success)]">
+                            <div class="text-2xl font-bold text-[var(--accent-success)]">${analytics.appointment_status?.completed || 0}</div>
+                            <div class="text-sm text-[var(--accent-success)]">✅ Concluídos</div>
                         </div>
-                        <div class="status-item text-center p-3 rounded-lg bg-red-50 dark:bg-red-900/20">
-                            <div class="text-2xl font-bold text-red-600">${analytics.appointment_status?.cancelled || 0}</div>
-                            <div class="text-sm text-red-600">❌ Cancelados</div>
+                        <div class="status-item text-center p-3 rounded-lg bg-[var(--accent-light)] border border-[var(--accent-error)]">
+                            <div class="text-2xl font-bold text-[var(--accent-error)]">${analytics.appointment_status?.cancelled || 0}</div>
+                            <div class="text-sm text-[var(--accent-error)]">❌ Cancelados</div>
                         </div>
-                        <div class="status-item text-center p-3 rounded-lg bg-gray-50 dark:bg-gray-900/20">
-                            <div class="text-2xl font-bold text-gray-600">${analytics.appointment_status?.no_show || 0}</div>
-                            <div class="text-sm text-gray-600">👻 Não Compareceu</div>
+                        <div class="status-item text-center p-3 rounded-lg bg-[var(--bg-secondary)] border border-[var(--border-color)]">
+                            <div class="text-2xl font-bold text-[var(--text-secondary)]">${analytics.appointment_status?.no_show || 0}</div>
+                            <div class="text-sm text-[var(--text-secondary)]">👻 Não Compareceu</div>
                         </div>
                     </div>
                 </div>

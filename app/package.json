@@ -21,7 +21,8 @@
     "@capacitor/haptics": "^7.0.2",
     "@capacitor/local-notifications": "^7.0.3",
     "@capacitor/splash-screen": "^7.0.1",
-    "@supabase/supabase-js": "^2.74.0"
+    "@supabase/supabase-js": "^2.74.0",
+    "pulltorefreshjs": "^0.1.22"
   },
   "devDependencies": {
     "@capacitor/assets": "^3.0.5",
@@ -29,7 +30,7 @@
     "autoprefixer": "^10.4.21",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
-    "vite": "^6.0.5"
+    "vite": "^7.1.9"
   },
   "engines": {
     "node": ">=18.0.0"

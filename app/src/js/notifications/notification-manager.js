@@ -383,11 +383,52 @@ window.NotificationManager = new NotificationManager();
 
 // Integração com o sistema de agendamentos
 window.NotificationIntegration = {
-    // Notificar quando um novo agendamento é criado
+    // Notificar quando um novo agendamento é criado PARA A FUNCIONÁRIA
     onAppointmentCreated(appointment) {
         const staff = window.appState?.staff?.find(s => s.id === appointment.staff_id);
-        if (staff && staff.id !== window.appState?.currentUser?.id) {
+        const currentUser = window.appState?.currentUser;
+        const currentStaff = window.appState?.staff?.find(s => s.user_id === currentUser?.id);
+        
+        // Notifica APENAS se o agendamento é para a funcionária logada
+        if (staff && currentStaff && appointment.staff_id === currentStaff.id) {
+            const client = window.appState?.clients?.find(c => c.id === appointment.client_id);
+            const clientName = client?.name || 'Cliente';
+            
+            this.addToNotificationPanel({
+                id: `appointment_${appointment.id}`,
+                type: 'appointment_created',
+                title: '📅 Novo Agendamento',
+                message: `${clientName} marcou um horário com você às ${appointment.time}`,
+                timestamp: new Date().toISOString(),
+                data: appointment
+            });
+            
             window.NotificationManager.notifyNewAppointment(appointment, staff);
+            this.updateNotificationBadge();
+        }
+    },
+
+    // Notificar quando um agendamento é atualizado
+    onAppointmentUpdated(appointment, changes) {
+        const staff = window.appState?.staff?.find(s => s.id === appointment.staff_id);
+        const currentUser = window.appState?.currentUser;
+        const currentStaff = window.appState?.staff?.find(s => s.user_id === currentUser?.id);
+        
+        // Notifica APENAS se o agendamento é da funcionária logada
+        if (staff && currentStaff && appointment.staff_id === currentStaff.id) {
+            const client = window.appState?.clients?.find(c => c.id === appointment.client_id);
+            const clientName = client?.name || 'Cliente';
+            
+            this.addToNotificationPanel({
+                id: `appointment_updated_${appointment.id}`,
+                type: 'appointment_updated',
+                title: '✏️ Agendamento Atualizado',
+                message: `Agendamento de ${clientName} foi modificado`,
+                timestamp: new Date().toISOString(),
+                data: appointment
+            });
+            
+            this.updateNotificationBadge();
         }
     },
 
@@ -396,15 +437,191 @@ window.NotificationIntegration = {
         const staff = window.appState?.staff?.find(s => s.id === appointment.staff_id);
         if (staff) {
             window.NotificationManager.notifyAppointmentCancelled(appointment, staff, reason);
+            this.updateNotificationBadge();
         }
     },
 
     // Notificar quando um agendamento é alterado
     onAppointmentUpdated(appointment, changes) {
         const staff = window.appState?.staff?.find(s => s.id === appointment.staff_id);
-        if (staff && staff.id !== window.appState?.currentUser?.id) {
+        const currentUser = window.appState?.currentUser;
+        
+        if (staff && currentUser && staff.id === currentUser.id) {
             window.NotificationManager.notifyAppointmentChanged(appointment, staff, changes);
+            this.updateNotificationBadge();
         }
+    },
+
+    // Notificar sobre aprovação de solicitação de fechamento de agenda
+    onScheduleRequestApproved(request, isApproved) {
+        const staff = window.appState?.staff?.find(s => s.id === request.staff_id);
+        if (staff) {
+            const title = isApproved ? '✅ Solicitação Aprovada' : '❌ Solicitação Negada';
+            const body = isApproved 
+                ? `Sua solicitação de fechamento de agenda foi aprovada!`
+                : `Sua solicitação de fechamento de agenda foi negada.`;
+            
+            window.NotificationManager.showFallbackNotification(title, body, {
+                icon: '📅',
+                duration: 8000
+            });
+            
+            this.addToNotificationPanel({
+                id: `schedule-${request.id}`,
+                type: 'schedule_request',
+                title: title,
+                message: body,
+                time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                timestamp: Date.now()
+            });
+            
+            this.updateNotificationBadge();
+        }
+    },
+
+    // Verificar e notificar aniversariantes do dia
+    checkBirthdays() {
+        const today = new Date();
+        const todayStr = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        
+        const clients = window.appState?.clients || [];
+        const birthdays = clients.filter(client => {
+            if (!client.birthday) return false;
+            const clientBirthday = new Date(client.birthday);
+            const clientBirthdayStr = `${String(clientBirthday.getMonth() + 1).padStart(2, '0')}-${String(clientBirthday.getDate()).padStart(2, '0')}`;
+            return clientBirthdayStr === todayStr;
+        });
+
+        birthdays.forEach(client => {
+            // Verificar se a notificação de aniversário está habilitada
+            const birthdayNotificationsEnabled = localStorage.getItem('birthdayNotificationsEnabled') !== 'false';
+            
+            if (birthdayNotificationsEnabled) {
+                window.NotificationManager.showFallbackNotification(
+                    `🎂 Aniversário de ${client.name}!`,
+                    `Hoje é aniversário de ${client.name}. Que tal enviar uma mensagem especial?`,
+                    { icon: '🎉', duration: 10000 }
+                );
+                
+                this.addToNotificationPanel({
+                    id: `birthday-${client.id}`,
+                    type: 'birthday',
+                    title: `🎂 Aniversário de ${client.name}!`,
+                    message: `Hoje é aniversário de ${client.name}. Que tal enviar uma mensagem especial?`,
+                    time: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                    timestamp: Date.now(),
+                    clientPhone: client.phone
+                });
+            }
+        });
+
+        if (birthdays.length > 0) {
+            this.updateNotificationBadge();
+        }
+
+        return birthdays;
+    },
+
+    // Adicionar notificação ao painel
+    addToNotificationPanel(notification) {
+        const notifications = this.getNotifications();
+        notifications.unshift(notification); // Adiciona no início
+        localStorage.setItem('app_notifications', JSON.stringify(notifications));
+        this.renderNotificationPanel();
+    },
+
+    // Obter notificações do localStorage
+    getNotifications() {
+        try {
+            const stored = localStorage.getItem('app_notifications');
+            return stored ? JSON.parse(stored) : [];
+        } catch {
+            return [];
+        }
+    },
+
+    // Renderizar painel de notificações
+    renderNotificationPanel() {
+        const panel = document.getElementById('notificationList');
+        if (!panel) return;
+
+        const notifications = this.getNotifications();
+
+        if (notifications.length === 0) {
+            panel.innerHTML = `
+                <div class="p-8 text-center text-[var(--text-secondary)]">
+                    <div class="text-4xl mb-2">🔔</div>
+                    <p>Nenhuma notificação nova</p>
+                </div>
+            `;
+            return;
+        }
+
+        panel.innerHTML = notifications.map(notif => {
+            let icon = '🔔';
+            if (notif.type === 'birthday') icon = '🎉';
+            if (notif.type === 'appointment') icon = '📅';
+            if (notif.type === 'schedule_request') icon = '📋';
+
+            return `
+                <div class="p-3 border-b border-[var(--border-color)] hover:bg-[var(--accent-light)] cursor-pointer transition-colors">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl flex-shrink-0">${icon}</span>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-[var(--text-primary)] text-sm">${notif.title}</p>
+                            <p class="text-xs text-[var(--text-secondary)] mt-1">${notif.message}</p>
+                            <p class="text-xs text-[var(--text-secondary)] mt-1">${notif.time}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    },
+
+    // Atualizar badge de notificações
+    updateNotificationBadge() {
+        const badge = document.getElementById('notificationBadge');
+        if (!badge) return;
+
+        const notifications = this.getNotifications();
+        const count = notifications.length;
+
+        if (count > 0) {
+            badge.textContent = count > 9 ? '9+' : count;
+            badge.classList.remove('hidden');
+        } else {
+            badge.classList.add('hidden');
+        }
+    },
+
+    // Limpar todas as notificações
+    clearAllNotifications() {
+        localStorage.removeItem('app_notifications');
+        this.renderNotificationPanel();
+        this.updateNotificationBadge();
+    },
+
+    // Inicializar sistema de notificações
+    init() {
+        // Carregar notificações existentes
+        this.renderNotificationPanel();
+        this.updateNotificationBadge();
+        
+        // Verificar aniversários ao carregar
+        this.checkBirthdays();
+        
+        // Verificar aniversários todo dia às 8h
+        const now = new Date();
+        const tomorrow8AM = new Date(now);
+        tomorrow8AM.setDate(tomorrow8AM.getDate() + 1);
+        tomorrow8AM.setHours(8, 0, 0, 0);
+        
+        const timeUntilTomorrow8AM = tomorrow8AM - now;
+        setTimeout(() => {
+            this.checkBirthdays();
+            // Repetir a cada 24h
+            setInterval(() => this.checkBirthdays(), 24 * 60 * 60 * 1000);
+        }, timeUntilTomorrow8AM);
     },
 
     // Programar lembretes para todos os agendamentos do dia
@@ -479,3 +696,28 @@ window.testNotifications = () => {
 
 // Disponibilizar globalmente
 window.NotificationManager = NotificationManager;
+
+// Funções globais para uso no HTML
+window.toggleNotificationPanel = function() {
+    const panel = document.getElementById('notificationPanel');
+    if (panel) {
+        panel.classList.toggle('hidden');
+    }
+};
+
+window.clearAllNotifications = function() {
+    if (window.NotificationIntegration) {
+        window.NotificationIntegration.clearAllNotifications();
+    }
+};
+
+window.toggleBirthdayNotifications = function() {
+    const currentSetting = localStorage.getItem('birthdayNotificationsEnabled') !== 'false';
+    localStorage.setItem('birthdayNotificationsEnabled', !currentSetting);
+    
+    const message = !currentSetting 
+        ? 'Notificações de aniversário ativadas ✅'
+        : 'Notificações de aniversário desativadas ❌';
+    
+    alert(message);
+};

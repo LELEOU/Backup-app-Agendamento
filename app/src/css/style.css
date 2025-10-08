@@ -13,6 +13,9 @@
     --accent-primary: #8a4fff;
     --accent-secondary: #7a3eee;
     --accent-light: #f3eefc;
+    --accent-success: #10b981;
+    --accent-error: #ef4444;
+    --accent-warning: #f59e0b;
 }
 
 .dark-mode {
@@ -24,6 +27,31 @@
     --accent-primary: #a77fff;
     --accent-secondary: #9a6eee;
     --accent-light: #3a2f4c;
+    --accent-success: #34d399;
+    --accent-error: #f87171;
+    --accent-warning: #fbbf24;
+    
+    /* Cores específicas para elementos especiais no modo escuro */
+    --birthday-bg-from: rgba(253, 224, 71, 0.15);
+    --birthday-bg-to: rgba(251, 146, 60, 0.15);
+    --birthday-border: #fbbf24;
+    --birthday-text: #fde047;
+}
+
+/* Estilos para aniversários */
+.birthday-card {
+    background: linear-gradient(135deg, 
+        var(--birthday-bg-from, rgb(254 249 195)), 
+        var(--birthday-bg-to, rgb(254 215 170)));
+    border-left: 4px solid var(--birthday-border, #fbbf24);
+    border-radius: 0.5rem;
+    padding: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.birthday-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
 }
 
 body {
@@ -31,6 +59,11 @@ body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
     transition: background-color 0.3s, color 0.3s;
+}
+
+html, body {
+    overflow-x: hidden;
+    height: 100%;
 }
 
 .calendar-day {
@@ -136,6 +169,12 @@ body {
     min-width: 0; /* Previne overflow */
 }
 
+/* Garantir que o main ocupe toda a altura disponível e não gere gap abaixo da sidebar */
+main#mainContent {
+    min-height: 20vh;
+    box-sizing: border-box;
+}
+
 /* Overlay - escondido por padrão */
 #sidebarOverlay {
     display: none;
@@ -144,7 +183,7 @@ body {
 /* ========================================== 
    DESKTOP (Telas maiores que 1024px)
    ========================================== */
-@media (min-width: 1025px) {
+@media (min-width: 901px) {
     #sidebar {
         width: 16rem; /* 256px */
         flex-shrink: 0;
@@ -161,7 +200,7 @@ body {
 /* ========================================== 
    MOBILE/TABLET (Até 1024px)
    ========================================== */
-@media (max-width: 1024px) {
+@media (max-width: 900px) {
     /* App em coluna no mobile */
     #app {
         flex-direction: column;
@@ -202,15 +241,25 @@ body {
         z-index: 999;
         -webkit-backdrop-filter: blur(2px);
         backdrop-filter: blur(2px);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s ease, visibility 0.2s ease;
     }
     
     #sidebarOverlay.active {
         display: block;
+        opacity: 1;
+        visibility: visible;
     }
     
     /* Main content ocupa tela toda */
     #mainContent {
         width: 100%;
+    }
+
+    /* Quando sidebar está ativa, prevenir scroll duplo */
+    body.sidebar-open {
+        overflow: hidden;
     }
 }
 
@@ -392,4 +441,493 @@ body {
         margin-left: 0 !important;
         margin-top: 0.5rem !important;
     }
+}
+
+/* ========================================
+   MELHORIAS ADICIONAIS - SISTEMA COMPLETO
+   ======================================== */
+
+/* Badge de notificações */
+#notificationBadge {
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+}
+
+/* Modal responsivo e centralizado */
+.modal-content {
+    max-width: 95vw;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+@media (min-width: 640px) {
+    .modal-content {
+        max-width: 600px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .modal-content {
+        max-width: 700px;
+    }
+}
+
+/* Filtros bonitos */
+.filter-container {
+    background: linear-gradient(135deg, 
+        var(--bg-secondary) 0%, 
+        var(--bg-primary) 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+.filter-container:hover {
+    box-shadow: 0 4px 12px rgba(138, 79, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.filter-select {
+    transition: all 0.3s ease;
+}
+
+.filter-select:hover {
+    border-color: var(--accent-primary);
+    background-color: var(--accent-light);
+}
+
+/* Calendário mensal melhorado */
+.calendar-day-wrapper {
+    transition: all 0.2s ease;
+}
+
+.calendar-day-wrapper:hover {
+    background-color: var(--accent-light);
+    transform: scale(1.02);
+}
+
+.calendar-appointment-badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+    display: inline-block;
+    margin: 2px 0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.calendar-appointment-badge:hover {
+    transform: translateX(2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Slot de horário ocupado */
+.time-slot-occupied {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: white;
+    border-radius: 6px;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Slot de encaixe */
+.time-slot-fitting {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white;
+    border-radius: 6px;
+    padding: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-left: 4px solid #b45309;
+}
+
+/* Card de funcionário com hierarquia */
+.staff-card {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.staff-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(138, 79, 255, 0.15);
+}
+
+.staff-role-badge {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.staff-role-admin {
+    background-color: #ddd6fe;
+    color: #5b21b6;
+}
+
+.dark-mode .staff-role-admin {
+    background-color: rgba(139, 92, 246, 0.2);
+    color: #c4b5fd;
+}
+
+.staff-role-hairdresser {
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.dark-mode .staff-role-hairdresser {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: #6ee7b7;
+}
+
+.staff-role-manicurist {
+    background-color: #dbeafe;
+    color: #1e40af;
+}
+
+.dark-mode .staff-role-manicurist {
+    background-color: rgba(59, 130, 246, 0.2);
+    color: #93c5fd;
+}
+
+.staff-role-receptionist {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.dark-mode .staff-role-receptionist {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: #fde68a;
+}
+
+/* Animação suave para listas */
+.fade-in {
+    animation: fadeIn 0.4s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Scrollbar personalizada para notificações */
+#notificationList::-webkit-scrollbar {
+    width: 6px;
+}
+
+#notificationList::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+}
+
+#notificationList::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 3px;
+}
+
+#notificationList::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-secondary);
+}
+
+/* ========================================
+   FLYONUI CUSTOM SELECT STYLES
+   ======================================== */
+
+/* Botão do select customizado */
+.advance-select-toggle {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    min-height: 42px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.advance-select-toggle:hover {
+    border-color: var(--accent-primary);
+}
+
+.advance-select-toggle:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+/* Menu dropdown */
+.advance-select-menu {
+    margin-top: 0.25rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    overflow: auto;
+    background-color: var(--bg-primary);
+    max-height: 300px;
+    z-index: 9999;
+}
+
+/* Opções do select */
+.advance-select-option {
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    color: var(--text-primary);
+    transition: background-color 0.15s;
+}
+
+.advance-select-option:hover {
+    background-color: var(--accent-light);
+}
+
+.advance-select-option.select-active {
+    background-color: var(--accent-light);
+    color: var(--accent-primary);
+    font-weight: 500;
+}
+
+/* Ícones dentro das opções */
+.advance-select-option img {
+    display: inline-block;
+}
+
+/* Placeholder text */
+.advance-select-toggle[aria-expanded="false"] {
+    color: var(--text-secondary);
+}
+
+/* ================================================
+   🎨 CHECKBOXES DE SERVIÇOS (FlyonUI)
+   ================================================ */
+
+/* Container de checkboxes de serviços */
+#services-checkboxes {
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-primary) var(--bg-secondary);
+}
+
+#services-checkboxes::-webkit-scrollbar {
+    width: 8px;
+}
+
+#services-checkboxes::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 4px;
+}
+
+#services-checkboxes::-webkit-scrollbar-thumb {
+    background: var(--accent-primary);
+    border-radius: 4px;
+}
+
+#services-checkboxes::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-secondary);
+}
+
+/* Checkbox customizado (FlyonUI) */
+.checkbox {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid var(--border-color);
+    border-radius: 0.375rem;
+    background-color: var(--bg-primary);
+    cursor: pointer;
+    transition: all 0.15s ease-in-out;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.checkbox:hover {
+    border-color: var(--accent-primary);
+}
+
+.checkbox:checked {
+    background-color: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+.checkbox:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(45deg);
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+}
+
+.checkbox:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(138, 79, 255, 0.2);
+}
+
+.checkbox-primary:checked {
+    background-color: var(--accent-primary);
+    border-color: var(--accent-primary);
+}
+
+/* Label hover effect */
+#services-checkboxes label:hover {
+    background-color: var(--accent-light);
+}
+
+/* Resumo de serviços */
+#services-summary {
+    animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Line clamp para descrições */
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+}
+
+/* ================================================
+   🎨 SCROLLBAR CUSTOMIZADA (TEMA)
+   ================================================ */
+
+/* Scrollbar Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-secondary);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-primary);
+}
+
+/* Scrollbar Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) var(--bg-secondary);
+}
+
+/* ================================================
+   📱 OTIMIZAÇÕES MOBILE/RESPONSIVO
+   ================================================ */
+
+/* Modais responsivos */
+@media (max-width: 640px) {
+    /* Modais ocupam toda a largura em mobile */
+    .modal-content {
+        max-width: 100% !important;
+        margin: 0.5rem !important;
+    }
+    
+    /* Formulários mais compactos */
+    .form-grid {
+        grid-template-columns: 1fr !important;
+    }
+    
+    /* Botões em bloco */
+    .action-buttons {
+        flex-direction: column !important;
+        width: 100% !important;
+    }
+    
+    .action-buttons button {
+        width: 100% !important;
+    }
+    
+    /* Calendário responsivo */
+    .calendar-grid {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)) !important;
+        gap: 0.5rem !important;
+    }
+    
+    /* Cards de appointment compactos */
+    .appointment-card {
+        padding: 0.75rem !important;
+        font-size: 0.875rem !important;
+    }
+    
+    /* Ocultar textos longos em mobile */
+    .mobile-hidden {
+        display: none !important;
+    }
+}
+
+/* Tablets */
+@media (min-width: 641px) and (max-width: 1024px) {
+    .calendar-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+    }
+}
+
+/* Desktop large */
+@media (min-width: 1025px) {
+    .calendar-grid {
+        grid-template-columns: repeat(7, minmax(0, 1fr)) !important;
+    }
+}
+
+/* Touch targets maiores em dispositivos touch */
+@media (hover: none) and (pointer: coarse) {
+    button, a, input[type="checkbox"], input[type="radio"] {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    select {
+        min-height: 48px;
+    }
+}
+
+.advance-select-toggle[aria-expanded="true"] {
+    color: var(--text-primary);
+    border-color: var(--accent-primary);
 }
