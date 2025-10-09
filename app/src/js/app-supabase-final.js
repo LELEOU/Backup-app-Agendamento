@@ -7173,7 +7173,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <!-- SELEÇÃO DE MÚLTIPLOS SERVIÇOS (FlyonUI Multi-Select) -->
                         <div>
                             <label class="block text-sm font-medium text-[var(--text-secondary)] mb-2">💅 Serviços</label>
-                            <select id="services-select" name="services[]" multiple required
+                            <select id="services-select" name="services[]" multiple
                                 data-select='{
                                     "placeholder": "Selecione os serviços...",
                                     "toggleTag": "<button type=\\"button\\" aria-expanded=\\"false\\"></button>",
@@ -7433,15 +7433,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             updateEndTimeOptions(); // ✨ Inicializa horários de término
         }
 
-                // 🎨 INICIALIZAR FLYONUI NO SELECT DE SERVIÇOS
-        setTimeout(() => {
-            if (window.HSSelect) {
-                const servicesSelectEl = document.getElementById('services-select');
-                if (servicesSelectEl) {
-                    window.HSSelect.autoInit();
-                }
-            }
-        }, 100);
+// 🎨 Re-inicializa os componentes da Preline UI que foram adicionados dinamicamente
+setTimeout(() => {
+    // O método correto para reinicializar componentes dinâmicos na Preline v2+
+    if (window.HSStaticMethods) {
+        window.HSStaticMethods.autoInit(['select']);
+        console.log('Preline select re-initialized for dynamic content.');
+    } else {
+        console.error('Preline (HSStaticMethods) não foi encontrado. Verifique se o script foi movido para o final do body no index.html.');
+    }
+}, 150); // Usando 150ms para dar uma margem de segurança
 
         document.getElementById('appointmentForm').addEventListener('submit', async (e) => {
             e.preventDefault();
